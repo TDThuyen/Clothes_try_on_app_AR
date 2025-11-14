@@ -3,6 +3,7 @@
 ## 🚀 Giới thiệu
 
 Dự án Backend sử dụng:
+
 - **Express** (REST API)
 - **TypeScript**
 - **Prisma ORM** (MySQL)
@@ -13,7 +14,9 @@ Dự án Backend sử dụng:
 ---
 
 ## 📁 Cấu trúc thư mục
+
 Cấu trúc thư mục tham khảo:
+
 ```
 app_be/
 ├── prisma/
@@ -43,7 +46,7 @@ app_be/
 │           ├── auth.service.ts
 │           ├── auth.schema.ts
 │           └── auth.dto.ts
-│   
+│
 ├── .env                       # Environment variables
 ├── .eslintrc.js               # ESLint config
 ├── .prettierrc                # Prettier config
@@ -52,22 +55,27 @@ app_be/
 ```
 
 ## 🛠️ Cài đặt & Chạy dự án
+
 Cài dependencies:
+
 ```
 npm install
 ```
 
 Chạy development:
+
 ```
 npm run dev
 ```
 
 Build production:
+
 ```
 npm run build
 ```
 
 Chạy server:
+
 ```
 npm start
 ```
@@ -75,16 +83,19 @@ npm start
 ## 🗃️ Database & Prisma
 
 Cấu hình MySQL trong file .env
+
 ```
 DATABASE_URL="mysql://USER:PASSWORD@localhost:3306/DATABASE_NAME"
 ```
 
 Ví dụ:
+
 ```
 DATABASE_URL="mysql://root:123456@localhost:3306/appdb"
 ```
 
 Generate Prisma Client: Dùng lệnh này khi bạn thay đổi schema.prisma để Prisma tạo lại client TypeScript.
+
 ```
 npx prisma generate
 ```
@@ -92,6 +103,7 @@ npx prisma generate
 Sau khi chạy, Prisma Client sẽ được tạo trong thư mục `generated/prisma/` hoặc đường dẫn bạn khai báo trong `schema.prisma`)
 
 Tạo migration (khuyến khích – dùng cho thực tế), lệnh này tạo file migration SQL và apply vào database.
+
 ```
 npx prisma migrate dev --name init
 ```
@@ -99,15 +111,16 @@ npx prisma migrate dev --name init
 Trong đó `init` là tên migration (bạn có thể đặt tên khác)
 
 Prisma sẽ:
+
 - tạo thư mục `prisma/migrations/<timestamp>_init/`
 - chứa file SQL mô tả thay đổi database
 - tự apply migration lên database
 - tự generate lại Prisma Client
 
-
 ## 🎨 Code Quality & Formatting
 
 ### 📋 Quy tắc chung
+
 - ✅ Code phải pass ESLint trước khi commit
 - ✅ Code phải được format với Prettier
 - ✅ Tuân thủ coding conventions của dự án
@@ -116,17 +129,21 @@ Prisma sẽ:
 ---
 
 ### 🔍 Lint và Format
+
 Kiểm tra lỗi ESLint:
+
 ```
 npm run lint
 ```
 
 Tự động sửa lỗi ESLint:
+
 ```
 npm run lint:fix
 ```
 
 Format code với Prettier
+
 ```
 npm run format
 ```
