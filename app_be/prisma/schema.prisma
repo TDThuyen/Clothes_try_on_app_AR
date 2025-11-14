@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -19,36 +19,41 @@ datasource db {
 // ========================================
 
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique @db.VarChar(100)
-  password       String    @db.VarChar(255)
-  name           String    @db.VarChar(100)
-  address        String?   @db.VarChar(255)
-  avatarUrl      String?   @map("avatar_url") @db.VarChar(255)
-  token          String?   @db.VarChar(512)
-  tokenExpiresAt DateTime? @map("token_expires_at")
-  otp            String?   @db.VarChar(6)
-  otpExpiresAt   DateTime? @map("otp_expires_at")
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @default(now()) @map("updated_at")
+  id             Int        @id @default(autoincrement())
+  email          String     @unique @db.VarChar(100)
+  password       String     @db.VarChar(255)
+  name           String     @db.VarChar(100)
+  address        String?    @db.VarChar(255)
+  avatarUrl      String?    @map("avatar_url") @db.VarChar(255)
+  token          String?    @db.VarChar(512)
+  tokenExpiresAt DateTime?  @map("token_expires_at")
+  otp            String?    @db.VarChar(6)
+  otpExpiresAt   DateTime?  @map("otp_expires_at")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @default(now()) @map("updated_at")
+  Review         Review[]
+  Cart           Cart[]
+  Order          Order[]
+  Payment        Payment[]
+  TryonSet       TryonSet[]
 
   @@map("users")
 }
 
 model Category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique @db.VarChar(100)
-  description String?   @db.Text
-  parentId    Int?      @map("parent_id")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  parentId    Int?     @map("parent_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   // Self-relation
-  parent      Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
-  children    Category[] @relation("CategoryToCategory")
+  parent   Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryToCategory")
 
   // Relations
-  products    Product[]
+  products Product[]
 
   @@map("categories")
 }
@@ -69,54 +74,54 @@ model Product {
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   // Relations
-  category       Category       @relation(fields: [categoryId], references: [id])
-  reviews        Review[]
-  cartItems      CartItem[]
-  orderItems     OrderItem[]
-  tryonSetItems  TryonSetItem[]
+  category      Category       @relation(fields: [categoryId], references: [id])
+  reviews       Review[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  tryonSetItems TryonSetItem[]
 
   @@map("products")
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  userId     Int      @map("user_id")
-  productId  Int      @map("product_id")
-  rating     Int      @default(0)
-  content    String?  @db.Text
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  productId Int      @map("product_id")
+  rating    Int      @default(0)
+  content   String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  user       User    @relation(fields: [userId], references: [id])
-  product    Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@map("reviews")
 }
 
 model Cart {
-  id         Int      @id @default(autoincrement())
-  userId     Int      @map("user_id")
-  createdAt  DateTime @default(now()) @map("created_at")
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
   // Relations
-  user       User       @relation(fields: [userId], references: [id])
-  cartItems  CartItem[]
+  user      User       @relation(fields: [userId], references: [id])
+  cartItems CartItem[]
 
   @@map("carts")
 }
 
 model CartItem {
-  id         Int     @id @default(autoincrement())
-  cartId     Int     @map("cart_id")
-  productId  Int     @map("product_id")
-  quantity   Int     @default(1)
-  size       String? @db.VarChar(10)
-  price      Float?
+  id        Int     @id @default(autoincrement())
+  cartId    Int     @map("cart_id")
+  productId Int     @map("product_id")
+  quantity  Int     @default(1)
+  size      String? @db.VarChar(10)
+  price     Float?
 
   // Relations
-  cart       Cart    @relation(fields: [cartId], references: [id])
-  product    Product @relation(fields: [productId], references: [id])
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@map("cart_items")
 }
@@ -131,9 +136,9 @@ model Order {
   createdAt    DateTime @default(now()) @map("created_at")
 
   // Relations
-  user         User        @relation(fields: [userId], references: [id])
-  orderItems   OrderItem[]
-  payments     Payment[]
+  user       User        @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+  payments   Payment[]
 
   @@map("orders")
 }
@@ -147,8 +152,8 @@ model OrderItem {
   price     Float?
 
   // Relations
-  order     Order   @relation(fields: [orderId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@map("order_items")
 }
@@ -166,8 +171,8 @@ model Payment {
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
   // Relations
-  order         Order @relation(fields: [orderId], references: [id])
-  user          User  @relation(fields: [userId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
 
   @@map("payments")
 }
@@ -180,8 +185,8 @@ model TryonSet {
   createdAt   DateTime @default(now()) @map("created_at")
 
   // Relations
-  user        User            @relation(fields: [userId], references: [id])
-  items       TryonSetItem[]
+  user  User           @relation(fields: [userId], references: [id])
+  items TryonSetItem[]
 
   @@map("tryon_sets")
 }
@@ -192,8 +197,8 @@ model TryonSetItem {
   productId Int @map("product_id")
 
   // Relations
-  set       TryonSet @relation(fields: [setId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
+  set     TryonSet @relation(fields: [setId], references: [id])
+  product Product  @relation(fields: [productId], references: [id])
 
   @@map("tryon_set_items")
 }
