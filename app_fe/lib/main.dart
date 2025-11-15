@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'screens/welcome_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/verification_screen.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -7,6 +11,13 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  // Route names
+  static const String welcomeRoute = '/';
+  static const String loginRoute = '/login';
+  static const String registerRoute = '/signup';
+  static const String verificationRoute = '/verify';
+  static const String homeRoute = '/home';
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +28,25 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      initialRoute: welcomeRoute,
+      routes: {
+        welcomeRoute: (_) => const WelcomeScreen(),
+        loginRoute: (_) => const LoginScreen(),
+        registerRoute: (_) => const RegisterScreen(),
+        homeRoute: (_) => const HomeScreen(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == verificationRoute) {
+          final args = settings.arguments as Map<String, dynamic>;
+          return MaterialPageRoute(
+            builder: (_) => VerificationScreen(
+              userId: args['userId'],
+              email: args['email'],
+            ),
+          );
+        }
+        return null;
+      },
     );
   }
 }

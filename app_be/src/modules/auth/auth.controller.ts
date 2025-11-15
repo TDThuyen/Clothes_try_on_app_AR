@@ -27,7 +27,7 @@ export class AuthController {
     } catch (error) {
       console.log(error);
       if (error instanceof Error && error.message === 'EMAIL_ALREADY_EXISTS') {
-        return res.status(400).json(err('EMAIL_ALREADY_EXISTS', 'Email already exists'));
+        return res.status(409).json(err('EMAIL_ALREADY_EXISTS', 'Email already exists'));
       }
 
       return res.status(500).json(err('INTERNAL_SERVER_ERROR', 'Something went wrong'));
@@ -46,7 +46,7 @@ export class AuthController {
           case 'USER_NOT_FOUND':
             return res.status(404).json(err('USER_NOT_FOUND', 'User not found'));
           case 'INVALID_PASSWORD':
-            return res.status(400).json(err('INVALID_PASSWORD', 'Invalid password'));
+            return res.status(401).json(err('INVALID_PASSWORD', 'Invalid password'));
         }
       }
 
@@ -87,7 +87,7 @@ export class AuthController {
           case 'OTP_NOT_FOUND':
           case 'OTP_INVALID':
           case 'OTP_EXPIRED':
-            return res.status(400).json(err(error.message, 'OTP invalid or expired'));
+            return res.status(401).json(err(error.message, 'OTP invalid or expired'));
         }
       }
 
