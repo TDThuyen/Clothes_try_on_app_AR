@@ -25,7 +25,10 @@
     "allowSyntheticDefaultImports": true,
 
     // Build performance
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    // type Roots
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
 
   "include": ["src"],

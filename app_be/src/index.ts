@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import authRoutes from './modules/auth/auth.route';
+import cartRoutes from './modules/cart/cart.route';
+import checkoutRoutes from './modules/checkout/checkout.route';
 import productRoutes from './modules/product/product.route';
 
 const app = express();
@@ -11,7 +13,7 @@ const app = express();
 app.use(
   cors({
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
@@ -34,6 +36,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/product', productRoutes);
+app.use('/cart', cartRoutes); // <-- MOUNT ROUTE
+app.use('/checkout', checkoutRoutes); // <-- MOUNT ROUTE
 
 // Start server
 const PORT = parseInt(process.env.PORT || '3000', 10);
