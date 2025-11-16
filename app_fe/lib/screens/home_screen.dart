@@ -3,6 +3,7 @@ import 'trouser_screen.dart';
 import 'shirt_screen.dart';
 import 'glasses_screen.dart';
 import 'hat_screen.dart';
+import 'search_screen.dart';
 import '../widgets/category_button.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -214,9 +215,17 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          if (index == 1) {
+            // Tab "Tìm kiếm"
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SearchScreen()),
+            );
+          } else {
+            setState(() {
+              _currentIndex = index;
+            });
+          }
         },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.black,

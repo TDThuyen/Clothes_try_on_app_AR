@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import authRoutes from './modules/auth/auth.route';
+import productRoutes from './modules/product/product.route';
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(express.json());
 
 // Dùng router cho /auth
 app.use('/auth', authRoutes); // <-- MOUNT ROUTE
+
+app.use('/product', productRoutes);
 
 // Start server
 const PORT = process.env.PORT || 3000;
