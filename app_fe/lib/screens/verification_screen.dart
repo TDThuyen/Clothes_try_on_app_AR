@@ -19,7 +19,10 @@ class VerificationScreen extends StatefulWidget {
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
-  final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   final int _otpLength = 6;
   bool _isOtpComplete = false;
@@ -74,11 +77,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
     );
 
     try {
-      final authService = AuthService(baseUrl: 'http://10.0.2.2:3000/');
-      await authService.verifyOtp(
-        userId: widget.userId,
-        otp: otp,
-      );
+      final authService = AuthService();
+      await authService.verifyOtp(userId: widget.userId, otp: otp);
 
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -151,9 +151,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (value) {
                         if (value.isNotEmpty) {
                           if (index < 5) {
@@ -164,9 +162,12 @@ class _VerificationScreenState extends State<VerificationScreen> {
                         } else if (value.isEmpty) {
                           if (index > 0) {
                             _focusNodes[index - 1].requestFocus();
-                            _controllers[index - 1].selection = TextSelection.fromPosition(
-                              TextPosition(offset: _controllers[index - 1].text.length),
-                            );
+                            _controllers[index - 1].selection =
+                                TextSelection.fromPosition(
+                                  TextPosition(
+                                    offset: _controllers[index - 1].text.length,
+                                  ),
+                                );
                           }
                         }
                       },
@@ -182,11 +183,18 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 child: ElevatedButton(
                   onPressed: _isOtpComplete ? _submitOtp : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _isOtpComplete ? Colors.green : Colors.grey,
+                    backgroundColor: _isOtpComplete
+                        ? Colors.green
+                        : Colors.grey,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                   ),
-                  child: const Text('Verify', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  child: const Text(
+                    'Verify',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
             ],
