@@ -17,11 +17,26 @@ app.use(
 
 app.use(express.json());
 
-// Dùng router cho /auth
-app.use('/auth', authRoutes); // <-- MOUNT ROUTE
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} from ${req.ip}`);
+  next();
+});
+
+// Routes
+app.use('/auth', authRoutes);
+// app.use('/api/products', productsRoutes);
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Server is running' });
+});
 
 // Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const PORT = parseInt(process.env.PORT || '3000', 10);
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server started on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`Network access: http://192.168.1.9:${PORT}/health`);
+  console.log(`Products API: http://localhost:${PORT}/api/products`);
 });

@@ -82,10 +82,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     try {
-      final authService = AuthService(baseUrl: 'http://10.0.2.2:3000');
+      final authService = AuthService();
       final storageService = StorageService();
 
-      final response = await authService.login(email: email, password: password);
+      final response = await authService.login(
+        email: email,
+        password: password,
+      );
       if (!mounted) return;
 
       // Always save tokens
@@ -126,7 +129,6 @@ class _LoginScreenState extends State<LoginScreen> {
         if (!mounted) return;
         Navigator.of(context).pushReplacementNamed('/home');
       });
-
     } catch (e) {
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -179,10 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   itemBuilder: (context, index) {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        _images[index],
-                        fit: BoxFit.cover,
-                      ),
+                      child: Image.asset(_images[index], fit: BoxFit.cover),
                     );
                   },
                 ),
@@ -191,10 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const Text(
                 'Login',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
 
@@ -233,11 +229,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 18),
+                          horizontal: 20,
+                          vertical: 18,
+                        ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Please enter your email';
-                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) return 'Enter a valid email';
+                        if (value == null || value.isEmpty)
+                          return 'Please enter your email';
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value))
+                          return 'Enter a valid email';
                         return null;
                       },
                     ),
@@ -251,8 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         hintText: 'Enter your password',
-                        prefixIcon:
-                        const Icon(Icons.lock),
+                        prefixIcon: const Icon(Icons.lock),
                         filled: true,
                         fillColor: Colors.grey[100],
                         border: OutlineInputBorder(
@@ -274,7 +273,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 18),
+                          horizontal: 20,
+                          vertical: 18,
+                        ),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword
@@ -290,8 +291,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Please enter your password';
-                        if (value.length < 6) return 'Password must be at least 6 characters';
+                        if (value == null || value.isEmpty)
+                          return 'Please enter your password';
+                        if (value.length < 6)
+                          return 'Password must be at least 6 characters';
                         return null;
                       },
                     ),
@@ -310,7 +313,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       controlAffinity: ListTileControlAffinity.leading,
                       contentPadding: EdgeInsets.zero,
                       dense: true,
-                      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                      visualDensity: const VisualDensity(
+                        horizontal: -4,
+                        vertical: -4,
+                      ),
                     ),
 
                     const SizedBox(height: 10),

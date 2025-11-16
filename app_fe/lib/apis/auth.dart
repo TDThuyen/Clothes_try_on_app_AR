@@ -1,17 +1,20 @@
 import 'package:dio/dio.dart';
+import '../config/app_config.dart';
 import '../models/auth/login_response.dart';
 import '../models/auth/refresh_token_response.dart';
 import '../models/auth/register_response.dart';
 import '../models/auth/verify_otp_response.dart';
 
 class AuthService {
-  final String baseUrl;
+  // Bỏ baseUrl và khởi tạo Dio trực tiếp
+  // final String baseUrl;
   late final Dio _dio;
 
-  AuthService({required this.baseUrl}) {
+  // Sửa constructor để không cần tham số
+  AuthService() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl,
+        baseUrl: AppConfig.baseUrl,
         headers: {'Content-Type': 'application/json'},
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
@@ -28,15 +31,12 @@ class AuthService {
     try {
       final response = await _dio.post(
         '/auth/register',
-        data: {
-          'name': name,
-          'email': email,
-          'password': password,
-        },
+        data: {'name': name, 'email': email, 'password': password},
       );
       return RegisterResponse.fromJson(response.data);
     } on DioException catch (e) {
-      if (e.response?.data != null && e.response!.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response!.data is Map<String, dynamic>) {
         final map = e.response!.data as Map<String, dynamic>;
         throw Exception(map['message'] ?? 'Unknown error');
       }
@@ -56,7 +56,8 @@ class AuthService {
       );
       return VerifyOtpResponse.fromJson(response.data);
     } on DioException catch (e) {
-      if (e.response?.data != null && e.response!.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response!.data is Map<String, dynamic>) {
         final map = e.response!.data as Map<String, dynamic>;
         throw Exception(map['message'] ?? 'Unknown error');
       }
@@ -76,7 +77,8 @@ class AuthService {
       );
       return LoginResponse.fromJson(response.data);
     } on DioException catch (e) {
-      if (e.response?.data != null && e.response!.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response!.data is Map<String, dynamic>) {
         final map = e.response!.data as Map<String, dynamic>;
         throw Exception(map['message'] ?? 'Unknown error');
       }
@@ -85,7 +87,9 @@ class AuthService {
   }
 
   // ===== Refresh Token =====
-  Future<RefreshTokenResponse> refreshToken({required String refreshToken}) async {
+  Future<RefreshTokenResponse> refreshToken({
+    required String refreshToken,
+  }) async {
     try {
       final response = await _dio.post(
         '/auth/refresh',
@@ -93,7 +97,8 @@ class AuthService {
       );
       return RefreshTokenResponse.fromJson(response.data);
     } on DioException catch (e) {
-      if (e.response?.data != null && e.response!.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response!.data is Map<String, dynamic>) {
         final map = e.response!.data as Map<String, dynamic>;
         throw Exception(map['message'] ?? 'Unknown error');
       }
