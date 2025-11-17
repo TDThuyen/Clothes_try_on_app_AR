@@ -118,6 +118,7 @@ model CartItem {
   quantity  Int     @default(1)
   size      String? @db.VarChar(10)
   price     Float?
+  isSelected Boolean @default(false)
 
   // Relations
   cart    Cart    @relation(fields: [cartId], references: [id])
@@ -129,6 +130,9 @@ model CartItem {
 model Order {
   id           Int      @id @default(autoincrement())
   userId       Int      @map("user_id")
+  first_name   String   @db.VarChar(25)
+  last_name    String   @db.VarChar(25)
+  address      String?  @db.VarChar(500)
   total        Float?
   usedPoints   Int      @default(0) @map("used_points")
   earnedPoints Int      @default(0) @map("earned_points")

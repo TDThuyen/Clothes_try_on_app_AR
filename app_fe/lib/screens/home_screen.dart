@@ -5,6 +5,7 @@ import 'glasses_screen.dart';
 import 'hat_screen.dart';
 import 'search_screen.dart';
 import '../widgets/category_button.dart';
+import 'cart_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 'Quần':
       default:
-        screen = const TrouserScreen();
+        screen = const HatScreen();
         break;
     }
 
@@ -224,6 +225,27 @@ class _HomeScreenState extends State<HomeScreen> {
           } else {
             setState(() {
               _currentIndex = index;
+            switch (index) {
+              case 0:
+                // Home
+                break;
+              case 1:
+                // Search
+                break;
+              case 2:
+                // AR Camera
+                break;
+              case 3:
+                // Cart
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartPage()),
+                );
+                break;
+              case 4:
+                // Profile
+                break;
+            }
             });
           }
         },
