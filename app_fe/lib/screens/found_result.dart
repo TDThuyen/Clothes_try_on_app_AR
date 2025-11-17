@@ -53,7 +53,7 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
     });
 
     try {
-      final data = await ApiService.searchProducts(
+      final data = await ProductService().searchProducts(
         q: widget.query,
         minPrice: _minPrice,
         maxPrice: _maxPrice,
@@ -64,20 +64,18 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
         sortBy: 'newest',
       );
 
-      final items = (data['items'] as List? ?? [])
-          .map((e) => e as Map<String, dynamic>)
-          .toList();
-      final total = data['total'] as int? ?? items.length;
+      final items = data.items;
+      final total = data.total;
 
       setState(() {
-        _items = items;
+        _items = items.cast<Map<String, dynamic>>();
         _total = total;
         _isLoading = false;
       });
     } on ApiException catch (e) {
       setState(() {
         _isLoading = false;
-        _error = 'API ${e.statusCode}: ${e.message}';
+        _error = e.message;
         _items = [];
       });
     } catch (e) {

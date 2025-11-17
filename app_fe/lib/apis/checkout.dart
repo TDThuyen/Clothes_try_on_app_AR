@@ -1,19 +1,19 @@
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-
 import '../../models/checkout/checkout_data.dart';
+import '../config/app_config.dart';
+import '../services/storage_service.dart';
 
-class CheckoutApi {
-  static const storage = FlutterSecureStorage();
-  static const String baseUrl = "http://localhost:3000/checkout";
+class CheckoutService {
+  final String baseUrl = AppConfig.baseUrl;
+  final StorageService storageService = StorageService();
 
-  static Future<String?> _token() async {
-    return await storage.read(key: "accessToken");
+  Future<String?> _token() async {
+    return await storageService.read('accessToken');
   }
 
   /// PLACE ORDER
-  static Future<http.Response?> placeOrder(
+  Future<http.Response?> placeOrder(
     CheckoutData checkoutData,
     String paymentMethod,
   ) async {

@@ -52,7 +52,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     setState(() => loading = true);
 
-    final res = await CheckoutApi.placeOrder(
+    final res = await CheckoutService().placeOrder(
       widget.checkoutData,
       selectedPaymentMethod,
     );
