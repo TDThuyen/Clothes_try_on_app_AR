@@ -25,7 +25,7 @@
     "allowSyntheticDefaultImports": true,
 
     // Build performance
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
 
   "include": ["src"],

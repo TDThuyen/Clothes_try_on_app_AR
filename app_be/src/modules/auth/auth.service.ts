@@ -1,6 +1,10 @@
 import { UserService } from '../user/user.service';
 import { hashPassword, comparePassword } from '../../common/utils/password';
-import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../common/utils/jwt';
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} from '../../common/utils/jwt';
 import type { TokenPayload } from '../../common/types/payload.type';
 import { OtpService } from '../../common/services/otp.service';
 
@@ -62,5 +66,9 @@ export class AuthService {
     } catch {
       throw new Error('INVALID_REFRESH_TOKEN');
     }
+  }
+
+  async updateRefreshToken(userId: number, refreshToken: string): Promise<void> {
+    await this.userService.updateRefreshToken(userId, refreshToken);
   }
 }

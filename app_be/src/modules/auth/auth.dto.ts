@@ -25,5 +25,7 @@ export interface RefreshTokenResponseDto {
 }
 
 export interface VerifyOtpResponseDto {
-  verified: true;
+  verified: boolean;
+  accessToken: string;
+  refreshToken: string;
 }

@@ -29,5 +29,9 @@ export default [
       'no-console': 'off',
       'no-undef': 'off',
     },
+
+    env: {
+      node: true,
+    }
   },
 ];

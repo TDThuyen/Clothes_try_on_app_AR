@@ -14,6 +14,7 @@ export class OtpService {
         otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
       },
     });
+
     await emailService.sendEmail(
       email,
       'Your OTP Code',

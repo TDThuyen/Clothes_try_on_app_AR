@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { signAccessToken, signRefreshToken } from '../../common/utils/jwt';
 
 import type {
   RegisterBodyDto,
@@ -8,8 +9,8 @@ import type {
   RegisterResponseDto,
   LoginResponseDto,
   RefreshTokenResponseDto,
-  VerifyOtpResponseDto,
   VerifyOtpBodyDto,
+  VerifyOtpResponseDto,
 } from './auth.dto';
 
 import type { ApiResponse } from '../../common/types/response.type';
@@ -78,9 +79,28 @@ export class AuthController {
   ): Promise<Response<ApiResponse<VerifyOtpResponseDto>>> {
     try {
       const { userId, otp } = req.body as VerifyOtpBodyDto;
+
+      // 1. Verify OTP
       await this.authService.verifyOtp(userId, otp);
 
-      return res.json(ok({ verified: true }, 'OTP verified successfully'));
+      // 2. Generate tokens
+      const payload = { userId };
+      const accessToken = signAccessToken(payload);
+      const refreshToken = signRefreshToken(payload);
+
+      // 3. Update refreshToken trong DB
+      await this.authService.updateRefreshToken(userId, refreshToken);
+
+      return res.json(
+        ok<VerifyOtpResponseDto>(
+          {
+            verified: true,
+            accessToken,
+            refreshToken,
+          },
+          'OTP verified & logged in',
+        ),
+      );
     } catch (error) {
       if (error instanceof Error) {
         switch (error.message) {

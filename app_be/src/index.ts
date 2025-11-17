@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-dotenv.config();
 
 import authRoutes from './modules/auth/auth.route';
+import orderRoutes from './modules/order/order.route';
+
+dotenv.config();
 
 const app = express();
 
@@ -17,11 +19,17 @@ app.use(
 
 app.use(express.json());
 
-// Dùng router cho /auth
-app.use('/auth', authRoutes); // <-- MOUNT ROUTE
+app.get('/', (_req, res) => {
+  res.json({ message: 'API is running' });
+});
 
-// Start server
-const PORT = process.env.PORT || 3000;
+// auth
+app.use('/auth', authRoutes);
+
+// orders
+app.use('/api', orderRoutes);
+
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
