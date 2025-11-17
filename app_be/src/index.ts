@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import authRoutes from './modules/auth/auth.route';
+import productRoutes from './modules/product/product.route';
 
 const app = express();
 
@@ -31,6 +32,8 @@ app.use('/auth', authRoutes);
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
+
+app.use('/product', productRoutes);
 
 // Start server
 const PORT = parseInt(process.env.PORT || '3000', 10);
