@@ -9,7 +9,7 @@ import authRoutes from './modules/auth/auth.route';
 import productRoutes from './modules/product/product.route';
 import cartRoutes from './modules/cart/cart.route';
 import checkoutRoutes from './modules/checkout/checkout.route';
-import orderRoutes from './modules/order/order.route'; // <-- ROUTE CỦA BẠN
+import orderRoutes from './modules/order/order.route'; 
 
 const app = express();
 
