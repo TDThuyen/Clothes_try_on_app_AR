@@ -77,6 +77,7 @@ class ApiService {
       final uri = Uri.parse(
         '${AppConfig.baseUrl}/api/products/search',
       ).replace(queryParameters: queryParameters);
+      print(uri);
 
       final response = await http.get(uri);
 

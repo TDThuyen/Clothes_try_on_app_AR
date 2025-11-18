@@ -31,12 +31,19 @@ class _SearchScreenState extends State<SearchScreen> {
   ];
 
   // filter state
-  RangeValues _priceRange = const RangeValues(10,1000000);
-  final List<String> _categories = ['Tất cả', 'Quần', 'Áo', 'Kính', 'Mũ'];
-  String _selectedCategory = 'Tất cả';
+  RangeValues _priceRange = const RangeValues(10,10000000);
+  final List<String> _categories = ['All', 'Quần', 'Áo', 'Kính', 'Mũ'];
+  final Map<String, String> _categoryDisplayText = {
+    'All': 'All',
+    'Quần': 'Trousers',
+    'Áo': 'Clothes',
+    'Kính': 'Glasses',
+    'Mũ': 'Hats',
+  };
+  String _selectedCategory = 'All';
 
-  final List<String> _genders = ['Tất cả', 'Nam', 'Nữ'];
-  String _selectedGender = 'Tất cả';
+  final List<String> _genders = ['All', 'Male', 'Female'];
+  String _selectedGender = 'All';
 
   // =============== Điều hướng sang trang kết quả =================
 
@@ -52,9 +59,9 @@ class _SearchScreenState extends State<SearchScreen> {
           minPrice: _priceRange.start,
           maxPrice: _priceRange.end,
           categoryName:
-          _selectedCategory == 'Tất cả' ? null : _selectedCategory,
+          _selectedCategory == 'All' ? null : _selectedCategory,
           gender:
-          _selectedGender == 'Tất cả' ? null : _selectedGender.toLowerCase(),
+          _selectedGender == 'All' ? null : _selectedGender.toLowerCase(),
         ),
       ),
     );
@@ -110,7 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     RangeSlider(
                       values: _priceRange,
                       min: 0,
-                      max: 1000000,
+                      max: 10000000,
                       divisions: 20,
                       labels: RangeLabels(
                         '\$${_priceRange.start.round()}',
@@ -146,7 +153,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         final selected = _selectedCategory == cat;
                         return ChoiceChip(
                           label: Text(
-                            cat,
+                            _categoryDisplayText[cat] ?? cat,
                             style: TextStyle(
                               color: selected ? Colors.pink : Colors.black,
                               fontWeight: FontWeight.w500,
@@ -203,7 +210,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           onSelected: (bool isSelected) {
                             setModalState(() {
-                              _selectedGender = isSelected ? g : 'Tất cả';
+                              _selectedGender = isSelected ? g : 'All';
                             });
                           },
                         );
@@ -219,8 +226,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           onPressed: () {
                             setModalState(() {
                               _priceRange = const RangeValues(10, 1000000);
-                              _selectedCategory = 'Tất cả';
-                              _selectedGender = 'Tất cả';
+                              _selectedCategory = 'All';
+                              _selectedGender = 'All';
                             });
                           },
                           child: const Text('Reset'),
@@ -239,9 +246,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             onPressed: () {
                               Navigator.pop(context);
                               final q = _searchController.text.trim();
-                              if (q.isNotEmpty) {
-                                _goToResultScreen(q);
-                              }
+                              _goToResultScreen(q);
                             },
                             child: const Text(
                               'Apply',
@@ -399,7 +404,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                     Text(
-                      'Show Tất cả',
+                      'Show all',
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],

@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedCategory = 'Quần';
+  String selectedCategory = 'Trousers';
   int _currentIndex = 0;
 
   void _onCategorySelected(String category) {
@@ -26,16 +26,16 @@ class _HomeScreenState extends State<HomeScreen> {
     // Navigate to corresponding screen
     Widget screen;
     switch (category) {
-      case 'Áo':
+      case 'Clothes':
         screen = const ShirtScreen();
         break;
-      case 'Kính':
+      case 'Glasses':
         screen = const GlassesScreen();
         break;
-      case 'Mũ':
+      case 'Hats':
         screen = const HatScreen();
         break;
-      case 'Quần':
+      case 'Trousers':
       default:
         // SỬA LẠI ĐỂ ĐIỀU HƯỚNG ĐÚNG
         screen = const TrouserScreen();
@@ -86,27 +86,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   CategoryButton(
                     icon: Icons.checkroom,
-                    label: 'Quần',
-                    isSelected: selectedCategory == 'Quần',
-                    onTap: () => _onCategorySelected('Quần'),
+                    label: 'Trousers',
+                    isSelected: selectedCategory == 'Trousers',
+                    onTap: () => _onCategorySelected('Trousers'),
                   ),
                   CategoryButton(
                     icon: Icons.shopping_bag,
-                    label: 'Áo',
-                    isSelected: selectedCategory == 'Áo',
-                    onTap: () => _onCategorySelected('Áo'),
+                    label: 'Clothes',
+                    isSelected: selectedCategory == 'Clothes',
+                    onTap: () => _onCategorySelected('Clothes'),
                   ),
                   CategoryButton(
                     icon: Icons.remove_red_eye,
                     label: 'Kính',
-                    isSelected: selectedCategory == 'Kính',
-                    onTap: () => _onCategorySelected('Kính'),
+                    isSelected: selectedCategory == 'Glasses',
+                    onTap: () => _onCategorySelected('Glasses'),
                   ),
                   CategoryButton(
                     icon: Icons.emoji_emotions,
-                    label: 'Mũ',
-                    isSelected: selectedCategory == 'Mũ',
-                    onTap: () => _onCategorySelected('Mũ'),
+                    label: 'Hats',
+                    isSelected: selectedCategory == 'Hats',
+                    onTap: () => _onCategorySelected('Hats'),
                   ),
                 ],
               ),
@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        'Bộ sưu tập',
+                        'Collection',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 28,
@@ -152,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        'Mùa đông 2024',
+                        'Winter 2024',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 22,
@@ -174,10 +174,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Sản phẩm nổi bật',
+                    'Outstanding products',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  TextButton(onPressed: () {}, child: const Text('Xem tất cả')),
+                  TextButton(onPressed: () {}, child: const Text('See all')),
                 ],
               ),
             ),
@@ -193,17 +193,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   _buildProductCard(
                     'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80',
-                    'Quần Jeans',
+                    'Jeans',
                     '450,000 ₫',
                   ),
                   _buildProductCard(
                     'https://images.unsplash.com/photo-1539533018447-63fcce2678e3',
-                    'Áo Sơ Mi',
+                    'Shirt',
                     '350,000 ₫',
                   ),
                   _buildProductCard(
                     'https://images.unsplash.com/photo-1572635196237-14b3f281503f',
-                    'Kính Mát',
+                    'Sunglasses',
                     '280,000 ₫',
                   ),
                 ],
@@ -254,17 +254,17 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Tìm kiếm'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(
             icon: Icon(Icons.camera_alt),
             label: 'AR Camera',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag),
-            label: 'Giỏ hàng',
+            label: 'Cart',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Tài khoản'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
         ],
       ),
     );

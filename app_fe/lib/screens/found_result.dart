@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../apis/product.dart';
+import '../models/product/search_product_response.dart';
 
 class FoundResultScreen extends StatefulWidget {
   final String title;
@@ -12,14 +13,14 @@ class FoundResultScreen extends StatefulWidget {
   final String? gender; // male / female (lowercase)
 
   const FoundResultScreen({
-    Key? key,
+    super.key,
     required this.title,
     required this.query,
     required this.minPrice,
     required this.maxPrice,
     this.categoryName,
     this.gender,
-  }) : super(key: key);
+  });
 
   @override
   State<FoundResultScreen> createState() => _FoundResultScreenState();
@@ -28,7 +29,7 @@ class FoundResultScreen extends StatefulWidget {
 class _FoundResultScreenState extends State<FoundResultScreen> {
   bool _isLoading = false;
   String? _error;
-  List<Map<String, dynamic>> _items = [];
+  List<Product> _items = [];
   int _total = 0;
 
   late double _minPrice;
@@ -57,8 +58,8 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
         q: widget.query,
         minPrice: _minPrice,
         maxPrice: _maxPrice,
-        categoryName: _categoryName,
-        gender: _gender,
+        categoryName: _categoryName == 'All' ? null : _categoryName,
+        gender: _gender == 'all' ? null : _gender,
         page: 1,
         limit: 20,
         sortBy: 'newest',
@@ -68,7 +69,7 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
       final total = data.total;
 
       setState(() {
-        _items = items.cast<Map<String, dynamic>>();
+        _items = items;
         _total = total;
         _isLoading = false;
       });
@@ -101,10 +102,9 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
         double localMax = _maxPrice;
         String? localCat = _categoryName;
         String? localGender = _gender;
-        const double _sliderMin = 10;          // hoặc 10 cũng được
-        const double _sliderMax = 1_000_000;  // giới hạn max cho price
+        const double _sliderMin = 10;
+        const double _sliderMax = 10_000_000;
 
-        // CLAMP để chắc chắn nằm trong [sliderMin, sliderMax]
         localMin = localMin.clamp(_sliderMin, _sliderMax);
         localMax = localMax.clamp(_sliderMin, _sliderMax);
         if (localMin > localMax) {
@@ -113,8 +113,15 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
           localMax = tmp;
         }
 
-        final genders = ['Tất cả', 'Nam', 'Nữ'];
-        final categories = ['Tất cả', 'Quần', 'Áo', 'Kính', 'Mũ'];
+        final genders = ['All', 'Male', 'Female'];
+        final categories = ['All', 'Quần', 'Áo', 'Kính', 'Mũ'];
+        final Map<String, String> _categoryDisplayText = {
+          'All': 'All',
+          'Quần': 'Trousers',
+          'Áo': 'Clothes',
+          'Kính': 'Glasses',
+          'Mũ': 'Hats',
+        };
 
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -192,13 +199,13 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
                       spacing: 8,
                       runSpacing: 8,
                       children: categories.map((c) {
-                        final isAll = c == 'Tất cả';
+                        final isAll = c == 'All';
                         final selected = isAll
                             ? (localCat == null || localCat!.isEmpty)
                             : localCat == c;
                         return ChoiceChip(
                           label: Text(
-                            c,
+                            _categoryDisplayText[c] ?? c,
                             style: TextStyle(
                               color:
                               selected ? Colors.pink : Colors.black,
@@ -229,7 +236,7 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
                       spacing: 8,
                       runSpacing: 8,
                       children: genders.map((g) {
-                        final isAll = g == 'Tất cả';
+                        final isAll = g == 'All';
                         final selected = isAll
                             ? (localGender == null ||
                             localGender!.isEmpty)
@@ -237,7 +244,7 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
                         return ChoiceChip(
                           label: Text(
                             isAll
-                                ? 'Tất cả'
+                                ? 'All'
                                 : (g[0].toUpperCase() +
                                 g.substring(1)),
                             style: TextStyle(
@@ -386,16 +393,12 @@ class _FoundResultScreenState extends State<FoundResultScreen> {
                 ),
                 itemBuilder: (context, index) {
                   final p = _items[index];
-                  final imageUrl = (p['image_url'] ??
-                      p['imageUrl'] ??
-                      p['image'] ??
-                      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600')
-                      .toString();
-                  final name = (p['name'] ?? '').toString();
-                  final priceValue = p['price'] ?? 0;
+                  final imageUrl = p.imageUrl ?? '';
+                  final name = p.name.toString();
+                  final priceValue = p.price;
                   final priceText =
-                      '\$ ${priceValue.toString()}';
-                  final rating = (p['rating_avg'] ?? 4.5).toString();
+                      '\ ${priceValue.toString()} đ';
+                  final rating = p.ratingAvg.toString();
 
                   return _ProductCard(
                     imageUrl: imageUrl,
@@ -420,12 +423,12 @@ class _ProductCard extends StatelessWidget {
   final String ratingText;
 
   const _ProductCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.name,
     required this.priceText,
     required this.ratingText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -460,7 +463,7 @@ class _ProductCard extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 4,
                         ),
                       ],
