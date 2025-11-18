@@ -1,95 +1,179 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
+import '../models/product/search_product_response.dart';
+import '../models/product/filter_options.dart';
+import '../widgets/product_card.dart';
 
-class GlassesScreen extends StatelessWidget {
+class GlassesScreen extends StatefulWidget {
   const GlassesScreen({Key? key}) : super(key: key);
+
+  @override
+  State<GlassesScreen> createState() => _GlassesScreenState();
+}
+
+class _GlassesScreenState extends State<GlassesScreen> {
+  final ApiService _apiService = ApiService();
+  late Future<List<Product>> _productsFuture;
+
+  GenderFilter _selectedGender = GenderFilter.all;
+  SortOption _selectedSort = SortOption.newest;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProducts();
+  }
+
+  void _fetchProducts() {
+    setState(() {
+      _productsFuture = _apiService.searchProducts(
+        categoryName: 'Kính',
+        gender: _selectedGender == GenderFilter.male
+            ? 'MALE'
+            : _selectedGender == GenderFilter.female
+            ? 'FEMALE'
+            : null,
+        sortBy: _selectedSort == SortOption.price_asc
+            ? 'price_asc'
+            : _selectedSort == SortOption.price_desc
+            ? 'price_desc'
+            : 'newest',
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Kính'), backgroundColor: Colors.black),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 0.7,
-        ),
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return _buildGlassesCard(
-            'https://images.unsplash.com/photo-1572635196237-14b3f281503f',
-            'Kính Mát ${index + 1}',
-            '${(index + 1) * 50 + 200},000 ₫',
-          );
-        },
+      appBar: AppBar(
+        title: const Text('Kính'),
+        centerTitle: true,
+        elevation: 1,
+      ),
+      body: Column(
+        children: [
+          _buildFilterBar(),
+          Expanded(child: _buildProductGrid()),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // TODO: Mở AR Camera
-        },
+        backgroundColor: Colors.black,
         icon: const Icon(Icons.camera_alt),
         label: const Text('Thử kính AR'),
-        backgroundColor: Colors.black,
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('AR camera coming soon.')),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildGlassesCard(String imageUrl, String name, String price) {
+  Widget _buildFilterBar() {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
-                ),
-                image: DecorationImage(
-                  image: NetworkImage(imageUrl),
-                  fit: BoxFit.cover,
-                ),
+            child: SegmentedButton<GenderFilter>(
+              segments: const [
+                ButtonSegment(value: GenderFilter.all, label: Text('Tất cả')),
+                ButtonSegment(value: GenderFilter.male, label: Text('Nam')),
+                ButtonSegment(value: GenderFilter.female, label: Text('Nữ')),
+              ],
+              selected: {_selectedGender},
+              onSelectionChanged: (selection) {
+                _selectedGender = selection.first;
+                _fetchProducts();
+              },
+              style: SegmentedButton.styleFrom(
+                selectedBackgroundColor: Colors.black,
+                selectedForegroundColor: Colors.white,
+                visualDensity: VisualDensity.compact,
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  price,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const SizedBox(width: 12),
+          _buildSortDropdown(),
         ],
       ),
+    );
+  }
+
+  Widget _buildSortDropdown() {
+    return PopupMenuButton<SortOption>(
+      initialValue: _selectedSort,
+      onSelected: (item) {
+        _selectedSort = item;
+        _fetchProducts();
+      },
+      itemBuilder: (_) => const [
+        PopupMenuItem(value: SortOption.newest, child: Text('Mới nhất')),
+        PopupMenuItem(
+          value: SortOption.price_asc,
+          child: Text('Giá: Thấp đến Cao'),
+        ),
+        PopupMenuItem(
+          value: SortOption.price_desc,
+          child: Text('Giá: Cao đến Thấp'),
+        ),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.sort, size: 20),
+            SizedBox(width: 8),
+            Text('Sắp xếp'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductGrid() {
+    return FutureBuilder<List<Product>>(
+      future: _productsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Không thể tải sản phẩm.\n${snapshot.error}',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('Không tìm thấy sản phẩm.'));
+        }
+
+        final products = snapshot.data!;
+        return GridView.builder(
+          padding: const EdgeInsets.all(16),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 160 / 250,
+          ),
+          itemCount: products.length,
+          itemBuilder: (_, index) => ProductCard(product: products[index]),
+        );
+      },
     );
   }
 }

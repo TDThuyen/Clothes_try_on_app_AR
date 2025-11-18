@@ -59,19 +59,20 @@ model Category {
 }
 
 model Product {
-  id             Int      @id @default(autoincrement())
-  name           String   @db.VarChar(100)
-  description    String?  @db.Text
-  price          Float
-  categoryId     Int      @map("category_id")
-  gender         String?  @db.VarChar(10)
-  availableSizes String?  @map("available_sizes") @db.VarChar(50)
-  color          String?  @db.VarChar(30)
-  imageUrl       String?  @map("image_url") @db.VarChar(255)
-  arModelUrl     String?  @map("ar_model_url") @db.VarChar(255)
-  ratingAvg      Float    @default(0) @map("rating_avg")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  id              Int      @id @default(autoincrement())
+  name            String   @db.VarChar(100)
+  description     String?  @db.Text
+  price           Float
+  categoryId      Int      @map("category_id")
+  gender          String?  @db.VarChar(10)
+  availableSizes  String?  @map("available_sizes") @db.VarChar(50)
+  color           String?  @db.VarChar(30)
+  imageUrl        String?  @map("image_url") @db.Text
+  arModelUrl      String?  @map("ar_model_url") @db.Text
+
+  ratingAvg       Float    @default(0) @map("rating_avg")
+  createdAt       DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.DateTime(3)
 
   // Relations
   category      Category       @relation(fields: [categoryId], references: [id])
