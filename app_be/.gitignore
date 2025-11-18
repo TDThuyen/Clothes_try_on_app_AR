@@ -4,3 +4,4 @@ node_modules
 dist
 /src/generated/prisma
 /generated
+src/config/firebase-admin-key.json

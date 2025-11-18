@@ -46,26 +46,27 @@ model Category {
 }
 
 model Product {
-  id             Int            @id @default(autoincrement())
-  name           String         @db.VarChar(100)
-  description    String?        @db.Text
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(100)
+  description    String?  @db.Text
   price          Float
-  categoryId     Int            @map("category_id")
-  gender         String?        @db.VarChar(10)
-  availableSizes String?        @map("available_sizes") @db.VarChar(50)
-  color          String?        @db.VarChar(30)
-  imageUrl       String?        @map("image_url") @db.VarChar(255)
-  arModelUrl     String?        @map("ar_model_url") @db.VarChar(255)
-  ratingAvg      Float          @default(0) @map("rating_avg")
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
-  cartItems      CartItem[]
-  orderItems     OrderItem[]
-  category       Category       @relation(fields: [categoryId], references: [id])
-  reviews        Review[]
-  tryonSetItems  TryonSetItem[]
+  categoryId     Int      @map("category_id")
+  gender         String?  @db.VarChar(10)
+  availableSizes String?  @map("available_sizes") @db.VarChar(50)
+  color          String?  @db.VarChar(30)
+  imageUrl       String?  @map("image_url") @db.VarChar(255)
+  arModelUrl     String?  @map("ar_model_url") @db.VarChar(255)
+  ratingAvg      Float    @default(0) @map("rating_avg")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
-  @@index([categoryId], map: "products_category_id_fkey")
+  // Relations
+  category      Category       @relation(fields: [categoryId], references: [id])
+  reviews       Review[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  tryonSetItems TryonSetItem[]
+
   @@map("products")
 }
 
@@ -103,8 +104,10 @@ model CartItem {
   quantity  Int     @default(1)
   size      String? @db.VarChar(10)
   price     Float?
-  cart      Cart    @relation(fields: [cartId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+
+  // Relations
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@index([cartId], map: "cart_items_cart_id_fkey")
   @@index([productId], map: "cart_items_product_id_fkey")
@@ -112,8 +115,8 @@ model CartItem {
 }
 
 model Order {
-  id           Int         @id @default(autoincrement())
-  userId       Int         @map("user_id")
+  id           Int      @id @default(autoincrement())
+  userId       Int      @map("user_id")
   total        Float?
   usedPoints   Int         @default(0) @map("used_points")
   earnedPoints Int         @default(0) @map("earned_points")

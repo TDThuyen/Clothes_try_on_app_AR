@@ -3,8 +3,13 @@ import 'trouser_screen.dart';
 import 'shirt_screen.dart';
 import 'glasses_screen.dart';
 import 'hat_screen.dart';
+import 'search_screen.dart';
 import '../widgets/category_button.dart';
+<<<<<<< HEAD
 import 'orders/my_orders_screen.dart';
+=======
+import 'cart_screen.dart';
+>>>>>>> 4069e14fb82fa5f9c73de30ef0430dd4d86ec7c4
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 'Quần':
       default:
+        // SỬA LẠI ĐỂ ĐIỀU HƯỚNG ĐÚNG
         screen = const TrouserScreen();
         break;
     }
@@ -233,9 +239,38 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          if (index == 1) {
+            // Tab "Tìm kiếm"
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SearchScreen()),
+            );
+          } else {
+            setState(() {
+              _currentIndex = index;
+              switch (index) {
+                case 0:
+                  // Home
+                  break;
+                case 1:
+                  // Search
+                  break;
+                case 2:
+                  // AR Camera
+                  break;
+                case 3:
+                  // Cart
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CartPage()),
+                  );
+                  break;
+                case 4:
+                  // Profile
+                  break;
+              }
+            });
+          }
         },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.black,

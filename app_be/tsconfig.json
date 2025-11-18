@@ -22,14 +22,16 @@
 
     // Import compatibility
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
 
     // Build performance
     "skipLibCheck": true,
+
+    // Type roots (được merge từ main)
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
 
   "include": ["src"],
-  "exclude": ["node_modules", "dist",
-    "src/generated"
-  ]
+  "exclude": ["node_modules", "dist", "src/generated"]
 }
