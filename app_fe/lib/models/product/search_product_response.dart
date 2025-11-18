@@ -44,3 +44,32 @@ class Product {
   String get formattedPrice =>
       '${price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} ₫';
 }
+
+class ProductSearchResponse {
+  final List<Product> items;
+  final int total;
+  final int page;
+  final int limit;
+  final int totalPages;
+
+  ProductSearchResponse({
+    required this.items,
+    required this.total,
+    required this.page,
+    required this.limit,
+    required this.totalPages,
+  });
+
+  factory ProductSearchResponse.fromJson(Map<String, dynamic> json) {
+    final itemsJson = json['items'] as List<dynamic>? ?? [];
+    final items = itemsJson.map((e) => Product.fromJson(e)).toList();
+
+    return ProductSearchResponse(
+      items: items,
+      total: json['total'] ?? 0,
+      page: json['page'] ?? 1,
+      limit: json['limit'] ?? 20,
+      totalPages: json['totalPages'] ?? 0,
+    );
+  }
+}

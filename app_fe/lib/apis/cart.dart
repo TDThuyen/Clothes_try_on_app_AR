@@ -1,22 +1,23 @@
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import '../config/app_config.dart';
 import '../models/cart/cart_data.dart';
+import '../services/storage_service.dart';
 
-class CartApi {
-  static const String apiBase = "http://localhost:3000/cart";
-  static const storage = FlutterSecureStorage();
+class CartService {
+  final String baseUrl = AppConfig.baseUrl;
+  final StorageService storageService = StorageService();
 
-  static Future<String?> _token() async {
-    return await storage.read(key: "accessToken");
+  Future<String?> _token() async {
+    return await storageService.read('accessToken');
   }
 
   // Fetch cart
-  static Future<List<CartItem>> fetchCart() async {
+  Future<List<CartItem>> fetchCart() async {
     final token = await _token();
 
     final res = await http.get(
-      Uri.parse(apiBase),
+      Uri.parse(baseUrl),
       headers: {"Authorization": "Bearer $token"},
     );
 
@@ -29,11 +30,11 @@ class CartApi {
   }
 
   // Update quantity
-  static Future<void> updateQuantity(int id, int qty) async {
+  Future<void> updateQuantity(int id, int qty) async {
     final token = await _token();
 
     await http.patch(
-      Uri.parse("$apiBase/$id/quantity"),
+      Uri.parse("$baseUrl/$id/quantity"),
       headers: {
         "Authorization": "Bearer $token",
         "Content-Type": "application/json",
@@ -43,11 +44,11 @@ class CartApi {
   }
 
   // Toggle selection
-  static Future<void> toggleSelection(int id, bool selected) async {
+  Future<void> toggleSelection(int id, bool selected) async {
     final token = await _token();
 
     await http.patch(
-      Uri.parse("$apiBase/$id/select"),
+      Uri.parse("$baseUrl/$id/select"),
       headers: {
         "Authorization": "Bearer $token",
         "Content-Type": "application/json",
@@ -57,11 +58,11 @@ class CartApi {
   }
 
   // Delete item
-  static Future<void> deleteItem(int id) async {
+  Future<void> deleteItem(int id) async {
     final token = await _token();
 
     await http.delete(
-      Uri.parse("$apiBase/$id"),
+      Uri.parse("$baseUrl/$id"),
       headers: {"Authorization": "Bearer $token"},
     );
   }

@@ -43,7 +43,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   }
 
   Future<void> fetchCartItems() async {
-    final items = await CartApi.fetchCart();
+    final items = await CartService().fetchCart();
     setState(() {
       cartItems = items;
       loading = false;
@@ -58,7 +58,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
     });
 
     await Future.delayed(const Duration(milliseconds: 700));
-    await CartApi.updateQuantity(item.id, newQuantity);
+    await CartService().updateQuantity(item.id, newQuantity);
   }
 
   Future<void> toggleSelection(int index) async {
@@ -69,12 +69,12 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
     });
 
     await Future.delayed(const Duration(milliseconds: 300));
-    await CartApi.toggleSelection(item.id, item.isSelected);
+    await CartService().toggleSelection(item.id, item.isSelected);
   }
 
   Future<void> removeItem(int index) async {
     final item = cartItems[index];
-    await CartApi.deleteItem(item.id);
+    await CartService().deleteItem(item.id);
 
     setState(() {
       cartItems.removeAt(index);

@@ -1,17 +1,11 @@
-// src/modules/products/product.service.ts
-import { Prisma, Product } from '../../generated/prisma/client';
+import type { Prisma } from '../../generated/prisma/client';
 import { getPrisma } from '../../common/prisma';
-import {
-  PaginatedProductsResult,
-  SearchProductsDto,
-} from './product.dto';
+import type { PaginatedProductsResult, Product, SearchProductsQueryDto } from './product.dto';
 
 const prisma = getPrisma();
 
 export class ProductService {
-  async searchProducts(
-    params: SearchProductsDto,
-  ): Promise<PaginatedProductsResult<Product>> {
+  async searchProducts(params: SearchProductsQueryDto): Promise<PaginatedProductsResult> {
     const {
       q,
       minPrice,
@@ -27,17 +21,12 @@ export class ProductService {
     const where: Prisma.ProductWhereInput = {};
     const AND: Prisma.ProductWhereInput[] = [];
 
-    // Search theo name / description (KHÔNG dùng mode cho version Prisma cũ)
     if (q) {
       AND.push({
-        OR: [
-          { name: { contains: q } },
-          { description: { contains: q } },
-        ],
+        OR: [{ name: { contains: q } }, { description: { contains: q } }],
       });
     }
 
-    // Filter theo khoảng giá
     if (minPrice !== undefined || maxPrice !== undefined) {
       const priceFilter: Prisma.FloatFilter = {};
 
@@ -47,12 +36,10 @@ export class ProductService {
       AND.push({ price: priceFilter });
     }
 
-    // Filter theo categoryId
     if (categoryId !== undefined) {
       AND.push({ categoryId });
     }
 
-    // Hoặc filter theo tên category (liên kết sang bảng categories)
     if (categoryName) {
       AND.push({
         category: {
@@ -63,7 +50,6 @@ export class ProductService {
       });
     }
 
-    // Filter theo gender
     if (gender) {
       AND.push({ gender });
     }
@@ -72,7 +58,6 @@ export class ProductService {
       where.AND = AND;
     }
 
-    // Sort
     let orderBy: Prisma.ProductOrderByWithRelationInput;
     switch (sortBy) {
       case 'price_asc':
@@ -83,7 +68,6 @@ export class ProductService {
         break;
       case 'newest':
       default:
-        // nếu trong Prisma field là createdAt (map từ created_at)
         orderBy = { createdAt: 'desc' as Prisma.SortOrder };
         break;
     }
@@ -102,7 +86,7 @@ export class ProductService {
     ]);
 
     return {
-      items,
+      items: items as unknown as Product[],
       total,
       page,
       limit,

@@ -1,26 +1,22 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../config/app_config.dart';
 import '../models/auth/login_response.dart';
 import '../models/auth/refresh_token_response.dart';
 import '../models/auth/register_response.dart';
 import '../models/auth/verify_otp_response.dart';
+import '../services/storage_service.dart';
+
+class ApiException implements Exception {
+  final String message;
+  ApiException(this.message);
+
+  @override
+  String toString() => message;
+}
 
 class AuthService {
-  // Bỏ baseUrl và khởi tạo Dio trực tiếp
-  // final String baseUrl;
-  late final Dio _dio;
-
-  // Sửa constructor để không cần tham số
-  AuthService() {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: AppConfig.baseUrl,
-        headers: {'Content-Type': 'application/json'},
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-      ),
-    );
-  }
+  final String baseUrl = AppConfig.baseUrl;
 
   // ===== Register =====
   Future<RegisterResponse> register({
@@ -28,19 +24,29 @@ class AuthService {
     required String email,
     required String password,
   }) async {
+    final url = Uri.parse('$baseUrl/auth/register');
+
     try {
-      final response = await _dio.post(
-        '/auth/register',
-        data: {'name': name, 'email': email, 'password': password},
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'password': password,
+        }),
       );
-      return RegisterResponse.fromJson(response.data);
-    } on DioException catch (e) {
-      if (e.response?.data != null &&
-          e.response!.data is Map<String, dynamic>) {
-        final map = e.response!.data as Map<String, dynamic>;
-        throw Exception(map['message'] ?? 'Unknown error');
+
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return RegisterResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        final message = errorData['message'] ?? 'Server error';
+        throw ApiException(message);
       }
-      throw Exception(e.message);
+    } catch (e) {
+      throw ApiException('$e');
     }
   }
 
@@ -49,19 +55,28 @@ class AuthService {
     required int userId,
     required String otp,
   }) async {
+    final url = Uri.parse('$baseUrl/auth/verify-otp');
+
     try {
-      final response = await _dio.post(
-        '/auth/verify-otp',
-        data: {'userId': userId, 'otp': otp},
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'userId': userId,
+          'otp': otp,
+        }),
       );
-      return VerifyOtpResponse.fromJson(response.data);
-    } on DioException catch (e) {
-      if (e.response?.data != null &&
-          e.response!.data is Map<String, dynamic>) {
-        final map = e.response!.data as Map<String, dynamic>;
-        throw Exception(map['message'] ?? 'Unknown error');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return VerifyOtpResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        final message = errorData['message'] ?? 'Server error';
+        throw ApiException(message);
       }
-      throw Exception(e.message);
+    } catch (e) {
+      throw ApiException('$e');
     }
   }
 
@@ -70,19 +85,29 @@ class AuthService {
     required String email,
     required String password,
   }) async {
+    final url = Uri.parse('$baseUrl/auth/login');
+
     try {
-      final response = await _dio.post(
-        '/auth/login',
-        data: {'email': email, 'password': password},
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+        }),
       );
-      return LoginResponse.fromJson(response.data);
-    } on DioException catch (e) {
-      if (e.response?.data != null &&
-          e.response!.data is Map<String, dynamic>) {
-        final map = e.response!.data as Map<String, dynamic>;
-        throw Exception(map['message'] ?? 'Unknown error');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return LoginResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        final message = errorData['message'] ?? 'Server error';
+        throw ApiException(message);
       }
-      throw Exception(e.message);
+
+    } catch (e) {
+      throw ApiException('$e');
     }
   }
 
@@ -90,19 +115,31 @@ class AuthService {
   Future<RefreshTokenResponse> refreshToken({
     required String refreshToken,
   }) async {
+    final url = Uri.parse('$baseUrl/auth/refresh');
+
     try {
-      final response = await _dio.post(
-        '/auth/refresh',
-        data: {'refreshToken': refreshToken},
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'refreshToken': refreshToken,
+        }),
       );
-      return RefreshTokenResponse.fromJson(response.data);
-    } on DioException catch (e) {
-      if (e.response?.data != null &&
-          e.response!.data is Map<String, dynamic>) {
-        final map = e.response!.data as Map<String, dynamic>;
-        throw Exception(map['message'] ?? 'Unknown error');
+
+      // ---- Success ----
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final refreshResp = RefreshTokenResponse.fromJson(data);
+        final storageService = StorageService();
+        await storageService.write('accessToken', refreshResp.data.accessToken);
+        return refreshResp;
+      } else {
+        final errorData = jsonDecode(response.body);
+        final message = errorData['message'] ?? 'Server error';
+        throw ApiException(message);
       }
-      throw Exception(e.message);
+    } catch (e) {
+      throw ApiException('$e');
     }
   }
 }

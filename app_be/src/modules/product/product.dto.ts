@@ -1,60 +1,26 @@
-// src/modules/products/product.dto.ts
-import { z } from 'zod';
+import type { SearchProductsQuerySchema } from './product.schema';
+import type { z } from 'zod';
 
-export const searchProductsQuerySchema = z.object({
-  q: z.string().trim().optional(),
+export type SearchProductsQueryDto = z.infer<typeof SearchProductsQuerySchema>;
 
-  minPrice: z
-    .preprocess(
-      (v) => (v === undefined || v === '' ? undefined : Number(v)),
-      z.number().nonnegative().optional(),
-    ),
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  categoryId: number;
+  gender: string;
+  availableSizes: string;
+  color: string;
+  imageUrl: string;
+  arModelUrl: string;
+  ratingAvg: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
-  maxPrice: z
-    .preprocess(
-      (v) => (v === undefined || v === '' ? undefined : Number(v)),
-      z.number().nonnegative().optional(),
-    ),
-
-  // filter theo categoryId (nếu front gửi id)
-  categoryId: z
-    .preprocess(
-      (v) => (v === undefined || v === '' ? undefined : Number(v)),
-      z.number().int().positive().optional(),
-    ),
-
-  // hoặc filter theo tên category (front đang dùng label string)
-  categoryName: z.string().trim().optional(),
-
-  gender: z
-    .string()
-    .trim()
-    .optional(),
-
-  page: z
-    .preprocess(
-      (v) => (v === undefined || v === '' ? 1 : Number(v)),
-      z.number().int().positive(),
-    )
-    .optional(),
-
-  limit: z
-    .preprocess(
-      (v) => (v === undefined || v === '' ? 20 : Number(v)),
-      z.number().int().positive().max(100),
-    )
-    .optional(),
-
-  sortBy: z
-    .enum(['newest', 'price_asc', 'price_desc'])
-    .optional()
-    .default('newest'),
-});
-
-export type SearchProductsDto = z.infer<typeof searchProductsQuerySchema>;
-
-export interface PaginatedProductsResult<T> {
-  items: T[];
+export interface PaginatedProductsResult {
+  items: Product[];
   total: number;
   page: number;
   limit: number;

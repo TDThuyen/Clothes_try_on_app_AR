@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/product.dart';
+import '../models/product/search_product_response.dart';
 import '../config/app_config.dart';
 
 class ApiService {

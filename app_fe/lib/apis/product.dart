@@ -1,69 +1,22 @@
-// lib/services/api_service.dart
 import 'dart:convert';
-import 'dart:html' as html;
+import 'package:http/http.dart' as http;
+import '../config/app_config.dart';
+import '../models/product/search_product_response.dart';
 
-/// Lỗi chung cho các request API
 class ApiException implements Exception {
-  final int statusCode;
   final String message;
-
-  ApiException({
-    required this.statusCode,
-    required this.message,
-  });
+  ApiException(this.message);
 
   @override
-  String toString() => 'ApiException($statusCode, $message)';
+  String toString() => message;
 }
 
-class ApiService {
-  /// Đổi lại nếu backend của bạn chạy port khác
-  static const String _baseUrl = 'http://localhost:3000';
+class ProductService {
+  final String baseUrl = AppConfig.baseUrl;
 
-  /// Hàm GET generic, trả về dynamic (Map/List tuỳ JSON)
-  static Future<dynamic> get(
-      String path, {
-        Map<String, String>? queryParameters,
-      }) async {
-    final uri =
-    Uri.parse('$_baseUrl$path').replace(queryParameters: queryParameters);
-
-    try {
-      final req = await html.HttpRequest.request(
-        uri.toString(),
-        method: 'GET',
-      );
-
-      final status = req.status ?? 0;
-      final text = req.responseText ?? '';
-
-      if (status >= 200 && status < 300) {
-        if (text.isEmpty) return null;
-        return jsonDecode(text);
-      } else {
-        throw ApiException(
-          statusCode: status,
-          message: text.isNotEmpty ? text : (req.statusText ?? 'Unknown error'),
-        );
-      }
-    } catch (e) {
-      // Bị lỗi network/CORS thì thường là ProgressEvent
-      if (e is html.ProgressEvent) {
-        final target = e.target;
-        if (target is html.HttpRequest) {
-          throw ApiException(
-            statusCode: target.status ?? 0,
-            message: target.statusText ?? 'Network/CORS error',
-          );
-        }
-      }
-      rethrow;
-    }
-  }
-
-  /// Hàm chuyên cho API searchProduct
-  /// GET /product/searchProduct
-  static Future<Map<String, dynamic>> searchProducts({
+  // Search products with filter
+  // GET /product?q=xxx&minPrice=..&maxPrice=..&categoryName=..&gender=..&page=..&limit=..&sortBy=...
+  Future<ProductSearchResponse> searchProducts({
     required String q,
     double? minPrice,
     double? maxPrice,
@@ -85,16 +38,20 @@ class ApiService {
       if (gender != null && gender.isNotEmpty) 'gender': gender,
     };
 
-    final data = await get('/product/searchProduct',
-        queryParameters: params);
+    final uri = Uri.parse('$baseUrl/product').replace(queryParameters: params);
 
-    if (data is Map<String, dynamic>) {
-      return data;
-    } else {
-      // phòng trường hợp backend trả Array luôn
-      return {
-        'items': data,
-      };
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return ProductSearchResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        final message = errorData['message'] ?? 'Server error';
+        throw ApiException(message);
+      }
+    } catch (e) {
+      throw ApiException('$e');
     }
   }
 }
