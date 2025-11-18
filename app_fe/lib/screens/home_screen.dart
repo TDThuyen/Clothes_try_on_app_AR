@@ -37,7 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 'Quần':
       default:
-        screen = const HatScreen();
+        // SỬA LẠI ĐỂ ĐIỀU HƯỚNG ĐÚNG
+        screen = const TrouserScreen();
         break;
     }
 
@@ -225,27 +226,27 @@ class _HomeScreenState extends State<HomeScreen> {
           } else {
             setState(() {
               _currentIndex = index;
-            switch (index) {
-              case 0:
-                // Home
-                break;
-              case 1:
-                // Search
-                break;
-              case 2:
-                // AR Camera
-                break;
-              case 3:
-                // Cart
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CartPage()),
-                );
-                break;
-              case 4:
-                // Profile
-                break;
-            }
+              switch (index) {
+                case 0:
+                  // Home
+                  break;
+                case 1:
+                  // Search
+                  break;
+                case 2:
+                  // AR Camera
+                  break;
+                case 3:
+                  // Cart
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CartPage()),
+                  );
+                  break;
+                case 4:
+                  // Profile
+                  break;
+              }
             });
           }
         },

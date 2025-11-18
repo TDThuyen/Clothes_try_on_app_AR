@@ -34,4 +34,8 @@ export const SearchProductsQuerySchema = z.object({
     .optional(),
 
   sortBy: z.enum(['newest', 'price_asc', 'price_desc']).optional().default('newest'),
+
+  // category: z.enum(['Quần', 'Áo', 'Kính', 'Mũ']).optional(),
+
+  // sortByPrice: z.enum(['asc', 'desc']).optional(),
 });

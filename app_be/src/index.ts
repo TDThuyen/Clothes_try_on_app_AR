@@ -34,7 +34,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
-app.use('/product', productRoutes);
+app.use('/api/products', productRoutes);
 app.use('/cart', cartRoutes); // <-- MOUNT ROUTE
 app.use('/checkout', checkoutRoutes); // <-- MOUNT ROUTE
 

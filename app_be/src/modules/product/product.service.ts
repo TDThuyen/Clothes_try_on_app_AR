@@ -96,3 +96,15 @@ export class ProductService {
 }
 
 export const productService = new ProductService();
+
+/**
+ * Lấy tất cả sản phẩm từ database.
+ */
+export const getAllProducts = async () => {
+  const products = await prisma.product.findMany({
+    orderBy: {
+      createdAt: 'desc', // Sắp xếp sản phẩm mới nhất lên đầu
+    },
+  });
+  return products;
+};

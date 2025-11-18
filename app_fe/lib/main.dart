@@ -5,6 +5,7 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/verification_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/all_products_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
   static const String registerRoute = '/signup';
   static const String verificationRoute = '/verify';
   static const String homeRoute = '/home';
+  static const String allProductsRoute = '/products';
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,7 @@ class MyApp extends StatelessWidget {
         loginRoute: (_) => const LoginScreen(),
         registerRoute: (_) => const RegisterScreen(),
         homeRoute: (_) => const HomeScreen(),
+        allProductsRoute: (_) => const AllProductsScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == verificationRoute) {
