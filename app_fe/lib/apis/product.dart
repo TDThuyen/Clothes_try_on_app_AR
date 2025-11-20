@@ -15,7 +15,7 @@ class ProductService {
   final String baseUrl = AppConfig.baseUrl;
 
   // Search products with filter
-  // GET /product?q=xxx&minPrice=..&maxPrice=..&categoryName=..&gender=..&page=..&limit=..&sortBy=...
+  // GET /api/products/search?q=xxx&minPrice=..&maxPrice=..&categoryName=..&gender=..&page=..&limit=..&sortBy=...
   Future<ProductSearchResponse> searchProducts({
     required String q,
     double? minPrice,
@@ -38,7 +38,7 @@ class ProductService {
       if (gender != null && gender.isNotEmpty) 'gender': gender,
     };
 
-    final uri = Uri.parse('$baseUrl/product').replace(queryParameters: params);
+    final uri = Uri.parse('$baseUrl/api/products/search').replace(queryParameters: params);
 
     try {
       final response = await http.get(uri);

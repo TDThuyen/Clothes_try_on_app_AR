@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 // SỬA LẠI IMPORT CHO ĐÚNG
-import { productService, getAllProducts } from './product.service';
+import { productService } from './product.service';
 import { SearchProductsQuerySchema } from './product.schema';
 import { ZodError } from 'zod';
 import { err, ok } from '../../common/utils/response';
@@ -25,7 +25,7 @@ export class ProductController {
   async getAllProducts(req: Request, res: Response) {
     try {
       // Gọi hàm `getAllProducts` đã được export riêng
-      const products = await getAllProducts();
+      const products = await productService.getAllProducts();
       return res.json(ok(products));
     } catch (e) {
       console.error('Get All Products Error:', e); // Log lỗi ra để debug
