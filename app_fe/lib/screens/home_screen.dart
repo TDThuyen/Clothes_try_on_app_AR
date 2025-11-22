@@ -6,6 +6,7 @@ import 'hat_screen.dart';
 import 'search_screen.dart';
 import '../widgets/category_button.dart';
 import 'cart_screen.dart';
+import '../widgets/chatbot_overlay.dart';
 import 'my_order_screen.dart';   // <-- THÊM IMPORT NÀY
 import 'product_detail_screen.dart';
 import 'profile_screen.dart';
@@ -40,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 'Trousers':
       default:
+        // SỬA LẠI ĐỂ ĐIỀU HƯỚNG ĐÚNG
         screen = const TrouserScreen();
         break;
     }
@@ -49,172 +51,143 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [ 
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.black87),
-              child: Text(
-                "Menu",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
+    return ChatbotOverlay(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () {},
+          ),
+          title: const Text(
+            'AR Try-On',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-            ListTile(
-              leading: const Icon(Icons.receipt_long),
-              title: const Text("Đơn hàng của tôi"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const MyOrderScreen()),
-                );
-              },
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications_outlined, color: Colors.black),
+              onPressed: () {},
             ),
           ],
         ),
-      ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
 
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.black),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        title: const Text(
-          'AR Try-On',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon:
-            const Icon(Icons.notifications_outlined, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-      ),
-
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-
-            // Category Buttons
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CategoryButton(
-                    icon: Icons.checkroom,
-                    label: 'Trousers',
-                    isSelected: selectedCategory == 'Trousers',
-                    onTap: () => _onCategorySelected('Trousers'),
-                  ),
-                  CategoryButton(
-                    icon: Icons.shopping_bag,
-                    label: 'Clothes',
-                    isSelected: selectedCategory == 'Clothes',
-                    onTap: () => _onCategorySelected('Clothes'),
-                  ),
-                  CategoryButton(
-                    icon: Icons.remove_red_eye,
-                    label: 'Kính',
-                    isSelected: selectedCategory == 'Glasses',
-                    onTap: () => _onCategorySelected('Glasses'),
-                  ),
-                  CategoryButton(
-                    icon: Icons.emoji_emotions,
-                    label: 'Hats',
-                    isSelected: selectedCategory == 'Hats',
-                    onTap: () => _onCategorySelected('Hats'),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            // Banner
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: const DecorationImage(
-                    image: NetworkImage(
-                      'https://images.unsplash.com/photo-1483985988355-763728e1935b',
+              // Category Buttons
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CategoryButton(
+                      icon: Icons.checkroom,
+                      label: 'Trousers',
+                      isSelected: selectedCategory == 'Trousers',
+                      onTap: () => _onCategorySelected('Trousers'),
                     ),
-                    fit: BoxFit.cover,
-                  ),
+                    CategoryButton(
+                      icon: Icons.shopping_bag,
+                      label: 'Clothes',
+                      isSelected: selectedCategory == 'Clothes',
+                      onTap: () => _onCategorySelected('Clothes'),
+                    ),
+                    CategoryButton(
+                      icon: Icons.remove_red_eye,
+                      label: 'Kính',
+                      isSelected: selectedCategory == 'Glasses',
+                      onTap: () => _onCategorySelected('Glasses'),
+                    ),
+                    CategoryButton(
+                      icon: Icons.emoji_emotions,
+                      label: 'Hats',
+                      isSelected: selectedCategory == 'Hats',
+                      onTap: () => _onCategorySelected('Hats'),
+                    ),
+                  ],
                 ),
+              ),
+
+              const SizedBox(height: 30),
+
+              // Banner
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
+                  height: 200,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.black.withOpacity(0.3),
-                        Colors.transparent,
+                    image: const DecorationImage(
+                      image: NetworkImage(
+                        'https://images.unsplash.com/photo-1483985988355-763728e1935b',
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withOpacity(0.3),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(20),
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Collection',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Winter 2024',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  padding: const EdgeInsets.all(20),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Collection',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Winter 2024',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
-            ),
 
-            const SizedBox(height: 30),
+              const SizedBox(height: 30),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Outstanding products',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(onPressed: () {}, child: const Text('See all')),
-                ],
+              // Feature Products Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Outstanding products',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    TextButton(onPressed: () {}, child: const Text('See all')),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
             SizedBox(
               height: 280,
@@ -300,6 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
         ],
       ),
+    )
     );
   }
 
