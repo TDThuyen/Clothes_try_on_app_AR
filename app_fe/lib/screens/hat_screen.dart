@@ -45,7 +45,7 @@ class _HatScreenState extends State<HatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mũ'), centerTitle: true, elevation: 1),
+      appBar: AppBar(title: const Text('Hats'), centerTitle: true, elevation: 1),
       body: Column(
         children: [
           _buildFilterBar(),
@@ -67,9 +67,9 @@ class _HatScreenState extends State<HatScreen> {
           Expanded(
             child: SegmentedButton<GenderFilter>(
               segments: const [
-                ButtonSegment(value: GenderFilter.all, label: Text('Tất cả')),
-                ButtonSegment(value: GenderFilter.male, label: Text('Nam')),
-                ButtonSegment(value: GenderFilter.female, label: Text('Nữ')),
+                ButtonSegment(value: GenderFilter.all, label: Text('All')),
+                ButtonSegment(value: GenderFilter.male, label: Text('Male')),
+                ButtonSegment(value: GenderFilter.female, label: Text('Female')),
               ],
               selected: {_selectedGender},
               onSelectionChanged: (selection) {
@@ -98,14 +98,14 @@ class _HatScreenState extends State<HatScreen> {
         _fetchProducts();
       },
       itemBuilder: (_) => const [
-        PopupMenuItem(value: SortOption.newest, child: Text('Mới nhất')),
+        PopupMenuItem(value: SortOption.newest, child: Text('Newest')),
         PopupMenuItem(
           value: SortOption.price_asc,
-          child: Text('Giá: Thấp đến Cao'),
+          child: Text('Ascending price'),
         ),
         PopupMenuItem(
           value: SortOption.price_desc,
-          child: Text('Giá: Cao đến Thấp'),
+          child: Text('Descending price'),
         ),
       ],
       child: Container(
@@ -118,7 +118,7 @@ class _HatScreenState extends State<HatScreen> {
           children: [
             Icon(Icons.sort, size: 20),
             SizedBox(width: 8),
-            Text('Sắp xếp'),
+            Text('Sort'),
           ],
         ),
       ),
@@ -137,7 +137,7 @@ class _HatScreenState extends State<HatScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                'Không thể tải sản phẩm.\n${snapshot.error}',
+                'Cannot load products.\n${snapshot.error}',
                 textAlign: TextAlign.center,
               ),
             ),

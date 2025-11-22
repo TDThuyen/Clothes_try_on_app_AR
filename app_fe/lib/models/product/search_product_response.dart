@@ -72,15 +72,16 @@ class ProductSearchResponse {
   });
 
   factory ProductSearchResponse.fromJson(Map<String, dynamic> json) {
-    final itemsJson = json['items'] as List<dynamic>? ?? [];
+    final data = json['data'] ?? json;
+    final itemsJson = data['items'] as List<dynamic>? ?? [];
     final items = itemsJson.map((e) => Product.fromJson(e)).toList();
 
     return ProductSearchResponse(
       items: items,
-      total: json['total'] ?? 0,
-      page: json['page'] ?? 1,
-      limit: json['limit'] ?? 20,
-      totalPages: json['totalPages'] ?? 0,
+      total: data['total'] ?? 0,
+      page: data['page'] ?? 1,
+      limit: data['limit'] ?? 20,
+      totalPages: data['totalPages'] ?? 0,
     );
   }
 }

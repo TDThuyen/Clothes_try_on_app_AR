@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedCategory = 'Quần';
+  String selectedCategory = 'Trousers';
   int _currentIndex = 0;
 
   void _onCategorySelected(String category) {
@@ -23,16 +23,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Widget screen;
     switch (category) {
-      case 'Áo':
+      case 'Clothes':
         screen = const ShirtScreen();
         break;
-      case 'Kính':
+      case 'Glasses':
         screen = const GlassesScreen();
         break;
-      case 'Mũ':
+      case 'Hats':
         screen = const HatScreen();
         break;
-      case 'Quần':
+      case 'Trousers':
       default:
         screen = const TrouserScreen();
     }

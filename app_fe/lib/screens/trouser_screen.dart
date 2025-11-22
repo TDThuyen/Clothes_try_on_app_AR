@@ -53,7 +53,7 @@ class _TrouserScreenState extends State<TrouserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quần'),
+        title: const Text('Trouser'),
         centerTitle: true,
         elevation: 1,
       ),
@@ -80,9 +80,9 @@ class _TrouserScreenState extends State<TrouserScreen> {
           Expanded(
             child: SegmentedButton<GenderFilter>(
               segments: const [
-                ButtonSegment(value: GenderFilter.all, label: Text('Tất cả')),
-                ButtonSegment(value: GenderFilter.male, label: Text('Nam')),
-                ButtonSegment(value: GenderFilter.female, label: Text('Nữ')),
+                ButtonSegment(value: GenderFilter.all, label: Text('All')),
+                ButtonSegment(value: GenderFilter.male, label: Text('Male')),
+                ButtonSegment(value: GenderFilter.female, label: Text('Female')),
               ],
               selected: {_selectedGender},
               onSelectionChanged: (newSelection) {
@@ -121,15 +121,15 @@ class _TrouserScreenState extends State<TrouserScreen> {
       itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
         const PopupMenuItem<SortOption>(
           value: SortOption.newest,
-          child: Text('Mới nhất'),
+          child: Text('Newest'),
         ),
         const PopupMenuItem<SortOption>(
           value: SortOption.price_asc,
-          child: Text('Giá: Thấp đến Cao'),
+          child: Text('Ascending price'),
         ),
         const PopupMenuItem<SortOption>(
           value: SortOption.price_desc,
-          child: Text('Giá: Cao đến Thấp'),
+          child: Text('Descending price'),
         ),
       ],
       child: Container(
@@ -142,7 +142,7 @@ class _TrouserScreenState extends State<TrouserScreen> {
           children: [
             Icon(Icons.sort, size: 20),
             SizedBox(width: 8),
-            Text('Sắp xếp'),
+            Text('Sort'),
           ],
         ),
       ),
@@ -162,14 +162,14 @@ class _TrouserScreenState extends State<TrouserScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Không thể tải sản phẩm. Vui lòng kiểm tra kết nối và thử lại.\n\nChi tiết: ${snapshot.error}',
+                'Cannot load products. Please try again.\n\nDetail: ${snapshot.error}',
                 textAlign: TextAlign.center,
               ),
             ),
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('Không tìm thấy sản phẩm nào.'));
+          return const Center(child: Text('Products not found.'));
         }
 
         final products = snapshot.data!;
