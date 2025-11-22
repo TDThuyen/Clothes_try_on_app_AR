@@ -81,6 +81,7 @@ flutter:
     - lib/assets/slider_image1.jpeg
     - lib/assets/slider_image2.jpeg
     - lib/assets/slider_image3.jpeg
+    - lib/assets/chatbot_button.png
 
   # To add images to your application, add an images section, like this:
 
