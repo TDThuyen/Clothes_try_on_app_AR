@@ -22,7 +22,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Tất cả sản phẩm'), centerTitle: true),
+      appBar: AppBar(title: const Text('All products'), centerTitle: true),
       body: FutureBuilder<List<Product>>(
         future: _productsFuture,
         builder: (context, snapshot) {
@@ -30,10 +30,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text('Lỗi: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('Không tìm thấy sản phẩm nào.'));
+            return const Center(child: Text('Products not found.'));
           }
 
           final products = snapshot.data!;

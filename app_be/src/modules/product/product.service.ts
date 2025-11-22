@@ -93,18 +93,18 @@ export class ProductService {
       totalPages: Math.ceil(total / limit),
     };
   }
+
+  /**
+   * Lấy tất cả sản phẩm từ database.
+   */
+  async getAllProducts() {
+    const products = await prisma.product.findMany({
+      orderBy: {
+        createdAt: 'desc', // Sắp xếp sản phẩm mới nhất lên đầu
+      },
+    });
+    return products;
+  }
 }
 
 export const productService = new ProductService();
-
-/**
- * Lấy tất cả sản phẩm từ database.
- */
-export const getAllProducts = async () => {
-  const products = await prisma.product.findMany({
-    orderBy: {
-      createdAt: 'desc', // Sắp xếp sản phẩm mới nhất lên đầu
-    },
-  });
-  return products;
-};

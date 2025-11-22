@@ -46,7 +46,7 @@ class _GlassesScreenState extends State<GlassesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kính'),
+        title: const Text('Glasses'),
         centerTitle: true,
         elevation: 1,
       ),
@@ -81,9 +81,9 @@ class _GlassesScreenState extends State<GlassesScreen> {
           Expanded(
             child: SegmentedButton<GenderFilter>(
               segments: const [
-                ButtonSegment(value: GenderFilter.all, label: Text('Tất cả')),
-                ButtonSegment(value: GenderFilter.male, label: Text('Nam')),
-                ButtonSegment(value: GenderFilter.female, label: Text('Nữ')),
+                ButtonSegment(value: GenderFilter.all, label: Text('All')),
+                ButtonSegment(value: GenderFilter.male, label: Text('Male')),
+                ButtonSegment(value: GenderFilter.female, label: Text('Female')),
               ],
               selected: {_selectedGender},
               onSelectionChanged: (selection) {
@@ -112,14 +112,14 @@ class _GlassesScreenState extends State<GlassesScreen> {
         _fetchProducts();
       },
       itemBuilder: (_) => const [
-        PopupMenuItem(value: SortOption.newest, child: Text('Mới nhất')),
+        PopupMenuItem(value: SortOption.newest, child: Text('Newest')),
         PopupMenuItem(
           value: SortOption.price_asc,
-          child: Text('Giá: Thấp đến Cao'),
+          child: Text('Ascending price'),
         ),
         PopupMenuItem(
           value: SortOption.price_desc,
-          child: Text('Giá: Cao đến Thấp'),
+          child: Text('Descending price'),
         ),
       ],
       child: Container(
@@ -132,7 +132,7 @@ class _GlassesScreenState extends State<GlassesScreen> {
           children: [
             Icon(Icons.sort, size: 20),
             SizedBox(width: 8),
-            Text('Sắp xếp'),
+            Text('Sort'),
           ],
         ),
       ),
@@ -158,7 +158,7 @@ class _GlassesScreenState extends State<GlassesScreen> {
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('Không tìm thấy sản phẩm.'));
+          return const Center(child: Text('Products not found.'));
         }
 
         final products = snapshot.data!;
