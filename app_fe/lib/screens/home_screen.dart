@@ -6,6 +6,7 @@ import 'hat_screen.dart';
 import 'search_screen.dart';
 import '../widgets/category_button.dart';
 import 'cart_screen.dart';
+import 'my_order_screen.dart';   // <-- THÊM IMPORT NÀY
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -37,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 'Trousers':
       default:
-        // SỬA LẠI ĐỂ ĐIỀU HƯỚNG ĐÚNG
         screen = const TrouserScreen();
         break;
     }
@@ -49,12 +49,41 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [ 
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.black87),
+              child: Text(
+                "Menu",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.receipt_long),
+              title: const Text("Đơn hàng của tôi"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MyOrderScreen()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {},
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
         ),
         title: const Text(
           'AR Try-On',
@@ -67,11 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: Colors.black),
+            icon:
+            const Icon(Icons.notifications_outlined, color: Colors.black),
             onPressed: () {},
           ),
         ],
       ),
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +198,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 30),
 
-            // Feature Products Header
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -184,7 +214,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 16),
 
-            // Feature Products List
             SizedBox(
               height: 280,
               child: ListView(
@@ -214,11 +243,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
           if (index == 1) {
-            // Tab "Tìm kiếm"
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const SearchScreen()),
@@ -228,23 +257,19 @@ class _HomeScreenState extends State<HomeScreen> {
               _currentIndex = index;
               switch (index) {
                 case 0:
-                  // Home
                   break;
                 case 1:
-                  // Search
                   break;
                 case 2:
-                  // AR Camera
                   break;
                 case 3:
-                  // Cart
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const CartPage()),
+                    MaterialPageRoute(builder: (_) => const CartPage()),
                   );
                   break;
                 case 4:
-                  // Profile
+                  
                   break;
               }
             });
