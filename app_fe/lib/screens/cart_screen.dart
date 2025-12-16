@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:app_fe/screens/home_screen.dart';
 import 'package:app_fe/screens/checkout_address_screen.dart';
-import '../models/cart/cart_data.dart';
+// Import các file mới
+import '../models/cart/cart_model.dart';
 import '../apis/cart.dart';
 
 class CartPage extends StatelessWidget {
@@ -9,21 +9,12 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shopping Cart',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: const ShoppingCartScreen(),
-      debugShowCheckedModeBanner: false,
+    // Không dùng MaterialApp nữa để tránh lỗi điều hướng
+    return const Scaffold(
+      body: ShoppingCartScreen(),
     );
   }
 }
-
-// ======================================================================
-//  SCREEN
-// ======================================================================
 
 class ShoppingCartScreen extends StatefulWidget {
   const ShoppingCartScreen({Key? key}) : super(key: key);
@@ -33,8 +24,10 @@ class ShoppingCartScreen extends StatefulWidget {
 }
 
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
-  List<CartItem> cartItems = [];
+  // Dùng List<CartItemModel> mới
+  List<CartItemModel> cartItems = [];
   bool loading = true;
+  final CartApi _cartApi = CartApi();
 
   @override
   void initState() {
@@ -43,47 +36,64 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   }
 
   Future<void> fetchCartItems() async {
-    final items = await CartService().fetchCart();
-    setState(() {
-      cartItems = items;
-      loading = false;
-    });
+    final cart = await _cartApi.getCart();
+    if (mounted) {
+      setState(() {
+        cartItems = cart?.items ?? [];
+        loading = false;
+      });
+    }
   }
 
   Future<void> updateQuantity(int index, int newQuantity) async {
     final item = cartItems[index];
 
+    // Cập nhật giao diện trước (Optimistic Update)
     setState(() {
-      item.quantity = newQuantity;
+      cartItems[index] = CartItemModel(
+        id: item.id,
+        productId: item.productId,
+        quantity: newQuantity,
+        size: item.size,
+        price: item.price,
+        isSelected: item.isSelected,
+        product: item.product,
+      );
     });
 
-    await Future.delayed(const Duration(milliseconds: 700));
-    await CartService().updateQuantity(item.id, newQuantity);
+    await _cartApi.updateQuantity(item.id, newQuantity);
   }
 
   Future<void> toggleSelection(int index) async {
     final item = cartItems[index];
+    final newStatus = !item.isSelected;
 
     setState(() {
-      item.isSelected = !item.isSelected;
+      cartItems[index] = CartItemModel(
+        id: item.id,
+        productId: item.productId,
+        quantity: item.quantity,
+        size: item.size,
+        price: item.price,
+        isSelected: newStatus,
+        product: item.product,
+      );
     });
 
-    await Future.delayed(const Duration(milliseconds: 300));
-    await CartService().toggleSelection(item.id, item.isSelected);
+    await _cartApi.toggleSelection(item.id, newStatus);
   }
 
   Future<void> removeItem(int index) async {
     final item = cartItems[index];
-    await CartService().deleteItem(item.id);
-
+    
+    // Xóa trên giao diện
     setState(() {
       cartItems.removeAt(index);
     });
-  }
 
-  // ======================================================================
-  //  TOTALS
-  // ======================================================================
+    // Gọi API xóa
+    await _cartApi.removeItem(item.id);
+  }
 
   double get subtotal {
     return cartItems.fold(
@@ -95,10 +105,6 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   double get shipping => 0.0;
   double get total => subtotal + shipping;
 
-  // ======================================================================
-  //  UI
-  // ======================================================================
-
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -106,56 +112,51 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
           },
         ),
         title: const Text(
           'Your Cart',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
       ),
 
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: cartItems.length,
-              itemBuilder: (context, index) {
-                return CartItemCard(
-                  item: cartItems[index],
-                  onIncrement: () {
-                    updateQuantity(index, cartItems[index].quantity + 1);
+      body: cartItems.isEmpty 
+        ? const Center(child: Text("Cart is empty"))
+        : Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: cartItems.length,
+                  itemBuilder: (context, index) {
+                    return CartItemCard(
+                      item: cartItems[index],
+                      onIncrement: () => updateQuantity(index, cartItems[index].quantity + 1),
+                      onDecrement: () {
+                        if (cartItems[index].quantity > 1) {
+                          updateQuantity(index, cartItems[index].quantity - 1);
+                        }
+                      },
+                      onRemove: () => removeItem(index),
+                      onToggleSelection: () => toggleSelection(index),
+                    );
                   },
-                  onDecrement: () {
-                    if (cartItems[index].quantity > 1) {
-                      updateQuantity(index, cartItems[index].quantity - 1);
-                    }
-                  },
-                  onRemove: () => removeItem(index),
-                  onToggleSelection: () => toggleSelection(index),
-                );
-              },
-            ),
+                ),
+              ),
+              _summaryFooter(context),
+            ],
           ),
-
-          _summaryFooter(context),
-        ],
-      ),
     );
   }
 
@@ -177,19 +178,10 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
         children: [
           _buildPriceRow('Product price', '\$${subtotal.toStringAsFixed(0)}'),
           const SizedBox(height: 12),
-          _buildPriceRow(
-            'Shipping',
-            shipping == 0 ? 'Freeship' : '\$${shipping.toStringAsFixed(0)}',
-          ),
+          _buildPriceRow('Shipping', shipping == 0 ? 'Freeship' : '\$${shipping.toStringAsFixed(0)}'),
           const SizedBox(height: 12),
-          _buildPriceRow(
-            'Subtotal',
-            '\$${total.toStringAsFixed(0)}',
-            isTotal: true,
-          ),
-
+          _buildPriceRow('Subtotal', '\$${total.toStringAsFixed(0)}', isTotal: true),
           const SizedBox(height: 20),
-
           SizedBox(
             width: double.infinity,
             height: 50,
@@ -199,24 +191,16 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   : () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const CheckoutFirst(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const CheckoutFirst()),
                       );
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2C2C2C),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
               ),
               child: const Text(
                 'Proceed to checkout',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
               ),
             ),
           ),
@@ -250,12 +234,8 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   }
 }
 
-// ======================================================================
-//  CART ITEM CARD WIDGET
-// ======================================================================
-
 class CartItemCard extends StatelessWidget {
-  final CartItem item;
+  final CartItemModel item;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
   final VoidCallback onRemove;
@@ -272,6 +252,10 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Lấy thông tin từ object product lồng bên trong
+    final productName = item.product?.name ?? "Sản phẩm #${item.productId}";
+    final imageUrl = item.product?.imageUrl ?? "";
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
@@ -287,49 +271,30 @@ class CartItemCard extends StatelessWidget {
             onTap: onToggleSelection,
             child: Container(
               margin: const EdgeInsets.only(top: 8, right: 8),
-              width: 24,
-              height: 24,
+              width: 24, height: 24,
               decoration: BoxDecoration(
                 color: item.isSelected ? const Color(0xFF4A9B8E) : Colors.white,
                 border: Border.all(
-                  color: item.isSelected
-                      ? const Color(0xFF4A9B8E)
-                      : Colors.grey[400]!,
+                  color: item.isSelected ? const Color(0xFF4A9B8E) : Colors.grey[400]!,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: item.isSelected
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
-                  : null,
+              child: item.isSelected ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
             ),
           ),
-
           SizedBox(
-            width: 80,
-            height: 100,
+            width: 80, height: 100,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
-                item.imageUrl ?? "",
+                imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 80,
-                  height: 100,
-                  color: Colors.grey[200],
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.image_not_supported,
-                    size: 30,
-                    color: Colors.grey,
-                  ),
-                ),
+                errorBuilder: (_, __, ___) => Container(color: Colors.grey[200], child: const Icon(Icons.image_not_supported, color: Colors.grey)),
               ),
             ),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,11 +304,9 @@ class CartItemCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        item.name,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        productName,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                        maxLines: 1, overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     GestureDetector(
@@ -354,65 +317,29 @@ class CartItemCard extends StatelessWidget {
                           color: const Color(0xFF4A9B8E),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: const Icon(
-                          Icons.close,
-                          size: 16,
-                          color: Colors.white,
-                        ),
+                        child: const Icon(Icons.close, size: 16, color: Colors.white),
                       ),
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 6),
-
-                Text(
-                  'Size: ${item.size}',
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                ),
-
+                Text('Size: ${item.size ?? "F"}', style: TextStyle(fontSize: 13, color: Colors.grey[600])),
                 const SizedBox(height: 12),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '\$${item.price.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
+                    Text('\$${item.price.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 4,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                      decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         children: [
-                          GestureDetector(
-                            onTap: onDecrement,
-                            child: const Icon(Icons.remove, size: 16),
-                          ),
+                          GestureDetector(onTap: onDecrement, child: const Icon(Icons.remove, size: 16)),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              '${item.quantity}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            child: Text('${item.quantity}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                           ),
-                          GestureDetector(
-                            onTap: onIncrement,
-                            child: const Icon(Icons.add, size: 16),
-                          ),
+                          GestureDetector(onTap: onIncrement, child: const Icon(Icons.add, size: 16)),
                         ],
                       ),
                     ),

@@ -105,6 +105,15 @@ export class ProductService {
     });
     return products;
   }
+
+  async getProductById(id: number): Promise<Product | null> {
+    const product = await prisma.product.findUnique({
+      where: { id: id },
+      // Nếu bạn muốn lấy luôn thông tin Category thì uncomment dòng dưới:
+      // include: { category: true },
+    });
+    return product as unknown as Product;
+  }
 }
 
 export const productService = new ProductService();

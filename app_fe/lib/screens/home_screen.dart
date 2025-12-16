@@ -6,7 +6,9 @@ import 'hat_screen.dart';
 import 'search_screen.dart';
 import '../widgets/category_button.dart';
 import 'cart_screen.dart';
-import 'my_order_screen.dart';   // <-- THÊM IMPORT NÀY
+import 'my_order_screen.dart';   
+import 'product_detail_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -221,16 +223,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   _buildProductCard(
+                    1,  
                     'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80',
                     'Jeans',
                     '450,000 ₫',
                   ),
                   _buildProductCard(
+                    2,
                     'https://images.unsplash.com/photo-1539533018447-63fcce2678e3',
                     'Shirt',
                     '350,000 ₫',
                   ),
                   _buildProductCard(
+                    3,
                     'https://images.unsplash.com/photo-1572635196237-14b3f281503f',
                     'Sunglasses',
                     '280,000 ₫',
@@ -269,7 +274,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                   break;
                 case 4:
-                  
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                  );
                   break;
               }
             });
@@ -295,38 +303,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProductCard(String imageUrl, String name, String price) {
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              image: DecorationImage(
-                image: NetworkImage(imageUrl),
-                fit: BoxFit.cover,
+  Widget _buildProductCard(int id, String imageUrl, String name, String price) {
+    // 2. Bọc Container bằng GestureDetector
+    return GestureDetector(
+      onTap: () {
+        // 3. Thực hiện chuyển trang và truyền ID
+        Navigator.push(
+          context,
+          MaterialPageRoute(  
+            builder: (context) => ProductDetailScreen(productId: id),
+          ),
+        );
+      },
+      child: Container(
+        width: 160,
+        margin: const EdgeInsets.only(right: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            name,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            price,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
+            const SizedBox(height: 8),
+            Text(
+              name,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              price,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

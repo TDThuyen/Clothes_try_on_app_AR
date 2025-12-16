@@ -39,3 +39,10 @@ export const SearchProductsQuerySchema = z.object({
 
   // sortByPrice: z.enum(['asc', 'desc']).optional(),
 });
+
+export const GetProductByIdSchema = z.object({
+  id: z.preprocess(
+    (v) => (v === undefined || v === '' ? undefined : Number(v)),
+    z.number().int().positive(),
+  ),
+});
