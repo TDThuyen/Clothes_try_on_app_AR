@@ -7,6 +7,7 @@ import authRoutes from './modules/auth/auth.route';
 import cartRoutes from './modules/cart/cart.route';
 import checkoutRoutes from './modules/checkout/checkout.route';
 import productRoutes from './modules/product/product.route';
+import chatbotRouter from "./modules/chatbot/chatbot.route";
 import orderRouts from './modules/order/order.routes';
 
 const app = express();
@@ -38,6 +39,7 @@ app.get('/health', (req, res) => {
 app.use('/api/products', productRoutes);
 app.use('/cart', cartRoutes); // <-- MOUNT ROUTE
 app.use('/checkout', checkoutRoutes); // <-- MOUNT ROUTE
+app.use("/api/chatbot", chatbotRouter);
 app.use('/orders', orderRouts);
 
 // Start server
