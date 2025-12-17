@@ -63,4 +63,30 @@ export class AuthService {
       throw new Error('INVALID_REFRESH_TOKEN');
     }
   }
+async getMe(userId: number) {
+    const user = await this.userService.findById(userId);
+
+    if (!user) {
+      throw new Error('USER_NOT_FOUND');
+    }
+
+    // Loại bỏ các trường nhạy cảm
+    // Dùng kỹ thuật destructuring để tách các trường không muốn trả về
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      password,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      token,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      otp,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      otpExpiresAt,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      tokenExpiresAt,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      updatedAt,
+      ...safeUser // Biến này chứa các thông tin còn lại (id, name, email, address, avatar...)
+    } = user;
+    return safeUser;
+  }
 }

@@ -7,6 +7,9 @@ import 'search_screen.dart';
 import '../widgets/category_button.dart';
 import 'cart_screen.dart';
 import '../widgets/chatbot_overlay.dart';
+import 'my_order_screen.dart';   // <-- THÊM IMPORT NÀY
+import 'product_detail_screen.dart';
+import 'profile_screen.dart';
 import 'ar_view.dart'; // THÊM IMPORT NÀY
 import 'ar_selection_screen.dart';
 
@@ -40,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 'Trousers':
       default:
-        // SỬA LẠI ĐỂ ĐIỀU HƯỚNG ĐÚNG
+      // SỬA LẠI ĐỂ ĐIỀU HƯỚNG ĐÚNG
         screen = const TrouserScreen();
         break;
     }
@@ -85,94 +88,94 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const SizedBox(height: 20),
 
-              // Category Buttons
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CategoryButton(
-                      icon: Icons.checkroom,
-                      label: 'Trousers',
-                      isSelected: selectedCategory == 'Trousers',
-                      onTap: () => _onCategorySelected('Trousers'),
-                    ),
-                    CategoryButton(
-                      icon: Icons.shopping_bag,
-                      label: 'Clothes',
-                      isSelected: selectedCategory == 'Clothes',
-                      onTap: () => _onCategorySelected('Clothes'),
-                    ),
-                    CategoryButton(
-                      icon: Icons.remove_red_eye,
-                      label: 'Kính',
-                      isSelected: selectedCategory == 'Glasses',
-                      onTap: () => _onCategorySelected('Glasses'),
-                    ),
-                    CategoryButton(
-                      icon: Icons.emoji_emotions,
-                      label: 'Hats',
-                      isSelected: selectedCategory == 'Hats',
-                      onTap: () => _onCategorySelected('Hats'),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
-              // Banner
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    image: const DecorationImage(
-                      image: NetworkImage(
-                        'https://images.unsplash.com/photo-1483985988355-763728e1935b',
+                // Category Buttons
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      CategoryButton(
+                        icon: Icons.checkroom,
+                        label: 'Trousers',
+                        isSelected: selectedCategory == 'Trousers',
+                        onTap: () => _onCategorySelected('Trousers'),
                       ),
-                      fit: BoxFit.cover,
-                    ),
+                      CategoryButton(
+                        icon: Icons.shopping_bag,
+                        label: 'Clothes',
+                        isSelected: selectedCategory == 'Clothes',
+                        onTap: () => _onCategorySelected('Clothes'),
+                      ),
+                      CategoryButton(
+                        icon: Icons.remove_red_eye,
+                        label: 'Kính',
+                        isSelected: selectedCategory == 'Glasses',
+                        onTap: () => _onCategorySelected('Glasses'),
+                      ),
+                      CategoryButton(
+                        icon: Icons.emoji_emotions,
+                        label: 'Hats',
+                        isSelected: selectedCategory == 'Hats',
+                        onTap: () => _onCategorySelected('Hats'),
+                      ),
+                    ],
                   ),
+                ),
+
+                const SizedBox(height: 30),
+
+                // Banner
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
+                    height: 200,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black.withOpacity(0.3),
-                          Colors.transparent,
+                      image: const DecorationImage(
+                        image: NetworkImage(
+                          'https://images.unsplash.com/photo-1483985988355-763728e1935b',
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0.3),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(20),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Collection',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Winter 2024',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    padding: const EdgeInsets.all(20),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Collection',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'Winter 2024',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 30),
+                const SizedBox(height: 30),
 
               // Feature Products Header
               Padding(
@@ -192,33 +195,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Feature Products List
-              SizedBox(
-                height: 280,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
-                    _buildProductCard(
-                      'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80',
-                      'Jeans',
-                      '450,000 ₫',
-                    ),
-                    _buildProductCard(
-                      'https://images.unsplash.com/photo-1539533018447-63fcce2678e3',
-                      'Shirt',
-                      '350,000 ₫',
-                    ),
-                    _buildProductCard(
-                      'https://images.unsplash.com/photo-1572635196237-14b3f281503f',
-                      'Sunglasses',
-                      '280,000 ₫',
-                    ),
-                  ],
+                SizedBox(
+                  height: 280,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    children: [
+                      _buildProductCard(
+                        1,
+                        'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80',
+                        'Jeans',
+                        '450,000 ₫',
+                      ),
+                      _buildProductCard(
+                        2,
+                        'https://images.unsplash.com/photo-1539533018447-63fcce2678e3',
+                        'Shirt',
+                        '350,000 ₫',
+                      ),
+                      _buildProductCard(
+                        3,
+                        'https://images.unsplash.com/photo-1572635196237-14b3f281503f',
+                        'Sunglasses',
+                        '280,000 ₫',
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
               const SizedBox(height: 20),
             ],
@@ -258,6 +263,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
                 break;
               case 4:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                );
                 // Profile - Để trống hoặc thêm màn hình Profile sau
                 break;
             }
@@ -283,38 +292,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProductCard(String imageUrl, String name, String price) {
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              image: DecorationImage(
-                image: NetworkImage(imageUrl),
-                fit: BoxFit.cover,
+  Widget _buildProductCard(int id, String imageUrl, String name, String price) {
+    // 2. Bọc Container bằng GestureDetector
+    return GestureDetector(
+      onTap: () {
+        // 3. Thực hiện chuyển trang và truyền ID
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(productId: id),
+          ),
+        );
+      },
+      child: Container(
+        width: 160,
+        margin: const EdgeInsets.only(right: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            name,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            price,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
+            const SizedBox(height: 8),
+            Text(
+              name,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              price,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
