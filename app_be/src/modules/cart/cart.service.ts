@@ -20,13 +20,22 @@ export class CartService {
 
   // Add item to cart
   async addItem(userId: number, item: AddCartItemDto) {
+    console.log('🛒 [ADD TO CART] userId:', userId);
+    console.log('📦 Item received:', item);
+
     // Find or create cart for user
-    let cart = await this.prisma.cart.findFirst({ where: { userId } });
+    let cart = await this.prisma.cart.findFirst({
+      where: { userId },
+    });
+
+    console.log('🔍 Existing cart:', cart);
 
     if (!cart) {
+      console.log('➕ No cart found → creating new cart');
       cart = await this.prisma.cart.create({
         data: { userId },
       });
+      console.log('✅ New cart created:', cart);
     }
 
     // Check if cart item already exists (same product + same size)
@@ -38,18 +47,27 @@ export class CartService {
       },
     });
 
+    console.log('🔎 Existing cart item:', existingItem);
+
     if (existingItem) {
-      // If found → increase quantity
-      return this.prisma.cartItem.update({
+      console.log(
+        `🔁 Item exists → updating quantity (${existingItem.quantity} + ${item.quantity})`,
+      );
+
+      const updatedItem = await this.prisma.cartItem.update({
         where: { id: existingItem.id },
         data: {
           quantity: existingItem.quantity + item.quantity,
         },
       });
+
+      console.log('✅ Cart item updated:', updatedItem);
+      return updatedItem;
     }
 
-    // Otherwise create new cart item
-    return this.prisma.cartItem.create({
+    console.log('🆕 Creating new cart item');
+
+    const newItem = await this.prisma.cartItem.create({
       data: {
         cartId: cart.id,
         productId: item.productId,
@@ -58,7 +76,11 @@ export class CartService {
         price: item.price,
       },
     });
+
+    console.log('✅ New cart item created:', newItem);
+    return newItem;
   }
+
 
   // Update quantity of a cart item
   async updateQuantity(cartItemId: number, quantity: number) {

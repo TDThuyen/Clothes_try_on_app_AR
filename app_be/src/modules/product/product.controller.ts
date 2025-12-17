@@ -4,6 +4,7 @@ import { productService } from './product.service';
 import { SearchProductsQuerySchema } from './product.schema';
 import { ZodError } from 'zod';
 import { err, ok } from '../../common/utils/response';
+import { SearchProductsQuerySchema, GetProductByIdSchema } from './product.schema';
 
 export class ProductController {
   async searchProducts(req: Request, res: Response) {
@@ -32,6 +33,30 @@ export class ProductController {
       return res.status(500).json(err('INTERNAL_SERVER_ERROR', 'Something went wrong'));
     }
   }
+    async getProductById(req: Request, res: Response) {
+        try {
+          // 1. Validate req.params (lấy id từ URL /products/:id)
+          const { id } = GetProductByIdSchema.parse(req.params);
+
+          // 2. Gọi service
+          const product = await productService.getProductById(id);
+
+          // 3. Kiểm tra nếu không tìm thấy
+          if (!product) {
+            return res.status(404).json(err('PRODUCT_NOT_FOUND', 'Product not found'));
+          }
+
+          // 4. Trả về thành công
+          return res.json(ok(product));
+        } catch (e) {
+          if (e instanceof ZodError) {
+            return res.status(400).json(err('INVALID_PARAMS', 'Invalid product ID'));
+          }
+          console.error('Get Product Detail Error:', e);
+          return res.status(500).json(err('INTERNAL_SERVER_ERROR', 'Something went wrong'));
+        }
+      }
+
 }
 
 export const productController = new ProductController();

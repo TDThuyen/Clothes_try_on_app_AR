@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product/search_product_response.dart';
+import '../screens/product_detail_screen.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -10,36 +11,67 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageUrl = product.imageUrl?.trim();
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ClipRRect(
+    return GestureDetector(
+        onTap: () {
+          // Chuyển hướng khi bấm vào thẻ
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProductDetailScreen(productId: product.id),
+              )
+          );
+        },
+        child: Container(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              child: imageUrl != null && imageUrl.isNotEmpty
-                  ? Image.network(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                )
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                    child: imageUrl != null && imageUrl.isNotEmpty
+                        ? Image.network(
                       imageUrl,
+                      width: double.infinity,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) =>
-                          const Center(child: Icon(Icons.broken_image)),
+                      const Center(child: Icon(Icons.broken_image, color: Colors.grey)),
                     )
-                  : const Center(child: Icon(Icons.image_not_supported)),
+                        : const Center(child: Icon(Icons.image_not_supported)),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        product.formattedPrice, // Đảm bảo model cũ của bạn có getter này
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(product.name, maxLines: 2, overflow: TextOverflow.ellipsis),
-          const SizedBox(height: 4),
-          Text(
-            product.formattedPrice,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ],
-      ),
+        )
     );
   }
 }

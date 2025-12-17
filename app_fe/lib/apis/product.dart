@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../config/app_config.dart';
 import '../models/product/search_product_response.dart';
+import '../models/product/product_model.dart';
 
 class ApiException implements Exception {
   final String message;
@@ -52,6 +53,31 @@ class ProductService {
       }
     } catch (e) {
       throw ApiException('$e');
+    }
+  }
+  Future<ProductModel?> getProductById(int id) async {
+    // URL: http://.../api/products/123
+    final uri = Uri.parse('$baseUrl/api/products/$id');
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+
+        // Backend trả về: { "status": "success", "data": { ... } }
+        // Ta lấy phần 'data' để parse
+        if (body['data'] != null) {
+          return ProductModel.fromJson(body['data']);
+        }
+        return null;
+      } else {
+        final errorData = jsonDecode(response.body);
+        final message = errorData['message'] ?? 'Không tìm thấy sản phẩm';
+        throw ApiException(message);
+      }
+    } catch (e) {
+      throw ApiException('Lỗi kết nối: $e');
     }
   }
 }

@@ -19,22 +19,43 @@ export const CartController = {
 
   // POST /cart
   async addItem(req: Request, res: Response) {
+    console.log('================ ADD ITEM TO CART ================');
+    console.log('➡️ Raw request body:', req.body);
+
     const parsed = AddCartItemSchema.safeParse(req.body);
+
     if (!parsed.success) {
+      console.log('❌ Validation failed:', parsed);
       return res.status(400).json(parsed.error);
     }
 
+    console.log('✅ Validation success:', parsed.data);
+
     try {
       const userId = req.user!.userId;
+      console.log('👤 User ID from token:', userId);
+
+      console.log('📡 Calling cartService.addItem...');
       const item = await cartService.addItem(userId, parsed.data);
+
+      console.log('✅ Item added to cart successfully:', item);
+      console.log('=================================================');
+
       return res.status(201).json(item);
     } catch (error: unknown) {
+      console.log('🔥 Error while adding item to cart');
+
       if (error instanceof Error) {
+        console.error('❌ Error message:', error.message);
+        console.error(error.stack);
         return res.status(500).json({ error: error.message });
       }
+
+      console.error('❌ Unknown error:', error);
       return res.status(500).json({ error: 'Unknown error' });
     }
   },
+
 
   // PATCH /cart/:itemId/quantity
   async updateQuantity(req: Request, res: Response) {
