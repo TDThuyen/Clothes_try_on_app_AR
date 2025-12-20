@@ -59,7 +59,40 @@ class ApiService {
     }
   }
 
-  // THÊM HÀM MỚI NÀY
+  // ========== THÊM METHOD MỚI CHO AR SELECTION ==========
+  /// Lấy sản phẩm theo categoryId - trả về List<Map<String, dynamic>>
+  Future<List<Map<String, dynamic>>> getProductsByCategoryId(
+    int categoryId,
+  ) async {
+    try {
+      final response = await http.get(
+        Uri.parse('${AppConfig.baseUrl}/api/products?categoryId=$categoryId'),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+
+        // Xử lý cả 2 trường hợp: response là List hoặc Object có key 'data'
+        if (responseBody is List) {
+          return List<Map<String, dynamic>>.from(responseBody);
+        } else if (responseBody is Map && responseBody.containsKey('data')) {
+          final data = responseBody['data'];
+          if (data is List) {
+            return List<Map<String, dynamic>>.from(data);
+          } else if (data is Map && data.containsKey('items')) {
+            return List<Map<String, dynamic>>.from(data['items']);
+          }
+        }
+        return [];
+      } else {
+        throw Exception('Failed to load products for category $categoryId');
+      }
+    } catch (e) {
+      print('Error getProductsByCategoryId: $e');
+      return [];
+    }
+  }
+
   Future<List<Product>> searchProducts({
     String? categoryName,
     String? gender,

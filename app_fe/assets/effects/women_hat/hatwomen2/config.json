@@ -1,0 +1,19 @@
+{
+  "faces": [
+    {
+      "gltf": {
+        "cut": "head",
+        "@use_physics": false,
+        "rotation": "270 0 0",
+        "scale": "2.25 2.25 1.5",
+        "translation": "0 50 0",
+        "gravity": "0 0 0",
+        "colliders": [],
+        "@mesh": "assets/hatwomen2.glb"
+      }
+    }
+  ],
+  "scene": "effect",
+  "version": "2.0.0",
+  "camera": {}
+}

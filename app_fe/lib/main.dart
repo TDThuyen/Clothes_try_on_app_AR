@@ -6,6 +6,7 @@ import 'screens/register_screen.dart';
 import 'screens/verification_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/all_products_screen.dart';
+import 'screens/ar_view.dart'; // Thêm import
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
   static const String verificationRoute = '/verify';
   static const String homeRoute = '/home';
   static const String allProductsRoute = '/products';
+  static const String arCameraRoute = '/ar-camera'; // Thêm route
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class MyApp extends StatelessWidget {
         registerRoute: (_) => const RegisterScreen(),
         homeRoute: (_) => const HomeScreen(),
         allProductsRoute: (_) => const AllProductsScreen(),
+        arCameraRoute: (_) => const ArView(), // Thêm route
       },
       onGenerateRoute: (settings) {
         if (settings.name == verificationRoute) {

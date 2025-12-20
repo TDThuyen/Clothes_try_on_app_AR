@@ -1,0 +1,19 @@
+{
+  "faces": [
+    {
+      "gltf": {
+        "cut": "head",
+        "@use_physics": false,
+        "rotation": "258 0 0",
+        "scale": "0.9 0.9 0.8",
+        "translation": "0 110 0",
+        "gravity": "0 0 0",
+        "colliders": [],
+        "@mesh": "assets/glasshat1.glb"
+      }
+    }
+  ],
+  "scene": "effect",
+  "version": "2.0.0",
+  "camera": {}
+}

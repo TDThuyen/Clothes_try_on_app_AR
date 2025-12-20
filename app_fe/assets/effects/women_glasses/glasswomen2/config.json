@@ -1,0 +1,19 @@
+{
+  "faces": [
+    {
+      "gltf": {
+        "cut": "head",
+        "@use_physics": false,
+        "rotation": "265 0 0",
+        "scale": "0.7 1.2 0.7",
+        "translation": "0 20 90",
+        "gravity": "0 0 0",
+        "colliders": [],
+        "@mesh": "assets/glasswomen2.glb"
+      }
+    }
+  ],
+  "scene": "effect",
+  "version": "2.0.0",
+  "camera": {}
+}
