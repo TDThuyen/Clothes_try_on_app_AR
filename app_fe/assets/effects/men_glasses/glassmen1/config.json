@@ -1,0 +1,19 @@
+{
+  "faces": [
+    {
+      "gltf": {
+        "cut": "head",
+        "@use_physics": false,
+        "rotation": "260 0 0",
+        "scale": "1.25 2 1.25",
+        "translation": "0 20 100",
+        "gravity": "0 0 0",
+        "colliders": [],
+        "@mesh": "assets/glassmen1.glb"
+      }
+    }
+  ],
+  "scene": "effect",
+  "version": "2.0.0",
+  "camera": {}
+}

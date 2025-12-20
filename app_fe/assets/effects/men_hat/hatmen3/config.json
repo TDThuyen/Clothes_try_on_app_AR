@@ -1,0 +1,19 @@
+{
+  "faces": [
+    {
+      "gltf": {
+        "cut": "head",
+        "@use_physics": false,
+        "rotation": "270 0 0",
+        "scale": "2 2 2",
+        "translation": "0 110 0",
+        "gravity": "0 0 0",
+        "colliders": [],
+        "@mesh": "assets/hatmen3.glb"
+      }
+    }
+  ],
+  "scene": "effect",
+  "version": "2.0.0",
+  "camera": {}
+}

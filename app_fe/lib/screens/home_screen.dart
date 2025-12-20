@@ -7,6 +7,8 @@ import 'search_screen.dart';
 import '../widgets/category_button.dart';
 import 'cart_screen.dart';
 import '../widgets/chatbot_overlay.dart';
+import 'ar_view.dart'; // THÊM IMPORT NÀY
+import 'ar_selection_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -69,7 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
           centerTitle: true,
           actions: [
             IconButton(
-              icon: const Icon(Icons.notifications_outlined, color: Colors.black),
+              icon: const Icon(
+                Icons.notifications_outlined,
+                color: Colors.black,
+              ),
               onPressed: () {},
             ),
           ],
@@ -177,7 +182,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Text(
                       'Outstanding products',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     TextButton(onPressed: () {}, child: const Text('See all')),
                   ],
@@ -219,37 +227,39 @@ class _HomeScreenState extends State<HomeScreen> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {
-            if (index == 1) {
-              // Tab "Tìm kiếm"
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const SearchScreen()),
-              );
-            } else {
-              setState(() {
-                _currentIndex = index;
-                switch (index) {
-                  case 0:
-                    // Home
-                    break;
-                  case 1:
-                    // Search
-                    break;
-                  case 2:
-                    // AR Camera
-                    break;
-                  case 3:
-                    // Cart
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CartPage()),
-                    );
-                    break;
-                  case 4:
-                    // Profile
-                    break;
-                }
-              });
+            setState(() {
+              _currentIndex = index;
+            });
+
+            // THÊM LOGIC ĐIỀU HƯỚNG CHO TẤT CẢ CÁC TAB
+            switch (index) {
+              case 0:
+                // Home - không cần làm gì vì đã ở Home
+                break;
+              case 1:
+                // Search
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SearchScreen()),
+                );
+                break;
+              case 2:
+                // AR Camera - THAY ĐỔI ĐIỀU HƯỚNG ĐẾN AR SELECTION SCREEN
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ArSelectionScreen()),
+                );
+                break;
+              case 3:
+                // Cart
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartPage()),
+                );
+                break;
+              case 4:
+                // Profile - Để trống hoặc thêm màn hình Profile sau
+                break;
             }
           },
           type: BottomNavigationBarType.fixed,
@@ -269,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
           ],
         ),
-      )
+      ),
     );
   }
 
