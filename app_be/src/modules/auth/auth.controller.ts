@@ -94,4 +94,23 @@ export class AuthController {
       return res.status(500).json(err('INTERNAL_SERVER_ERROR', 'Something went wrong'));
     }
   }
+async getMe(req: Request, res: Response) {
+    try {
+      const userId = (req as Request & { user?: { userId: number } }).user?.userId;
+
+      if (!userId) {
+        return res.status(401).json(err('UNAUTHORIZED', 'User not authenticated'));
+      }
+
+      const user = await this.authService.getMe(Number(userId));
+
+      return res.json(ok(user));
+    } catch (error) {
+      if (error instanceof Error && error.message === 'USER_NOT_FOUND') {
+        return res.status(404).json(err('USER_NOT_FOUND', 'User not found'));
+      }
+      console.error(error);
+      return res.status(500).json(err('INTERNAL_SERVER_ERROR', 'Something went wrong'));
+    }
+  }
 }

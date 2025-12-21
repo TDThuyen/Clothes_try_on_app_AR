@@ -29,6 +29,37 @@ class CartService {
     return items.map((i) => CartItem.fromJson(i)).toList();
   }
 
+  Future<bool> addToCart({
+    required int cartId,
+    required int productId,
+    required int quantity,
+    required String size,
+    required double price,
+  }) async {
+    try {
+      final token = await _token();
+      final url = Uri.parse('$baseUrl/cart');
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          'cartId': 1,
+          'productId': productId,
+          'quantity': quantity,
+          'size': size,
+          'price': price,
+        }),
+      );
+      return response.statusCode == 201 || response.statusCode == 200;
+    } catch (e) {
+      print('Lỗi Add Cart: $e');
+      return false;
+    }
+  }
+
   // Update quantity
   Future<void> updateQuantity(int id, int qty) async {
     final token = await _token();

@@ -27,6 +27,10 @@ export class UserService {
     });
   }
 
+   async findById(id: number) {
+        return this.prisma.user.findUnique({where: { id },});
+   }
+
   async updateRefreshToken(userId: number, refreshToken: string): Promise<void> {
     await this.prisma.user.update({
       where: { id: userId },

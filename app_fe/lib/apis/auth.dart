@@ -6,6 +6,7 @@ import '../models/auth/refresh_token_response.dart';
 import '../models/auth/register_response.dart';
 import '../models/auth/verify_otp_response.dart';
 import '../services/storage_service.dart';
+import '../models/auth/user_model.dart';
 
 class ApiException implements Exception {
   final String message;
@@ -17,6 +18,7 @@ class ApiException implements Exception {
 
 class AuthService {
   final String baseUrl = AppConfig.baseUrl;
+  final StorageService _storageService = StorageService();
 
   // ===== Register =====
   Future<RegisterResponse> register({
@@ -109,6 +111,47 @@ class AuthService {
     } catch (e) {
       throw ApiException('$e');
     }
+  }
+
+  Future<UserModel?> getProfile() async {
+    final url = Uri.parse('$baseUrl/auth/me');
+
+    try {
+      final token = await _storageService.read('accessToken');
+
+      if (token == null) return null;
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // Gửi Token lên Header
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        // Backend trả về: { "status": "success", "data": {...} }
+        // Hoặc trả trực tiếp {...} tùy format
+        // Code mẫu này giả định data nằm trong key 'data'
+        if (data['data'] != null) {
+          return UserModel.fromJson(data['data']);
+        }
+        return UserModel.fromJson(data); // Fallback nếu trả trực tiếp
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Get profile error: $e');
+      return null;
+    }
+  }
+
+  // 2. Đăng xuất (Logout)
+  Future<void> logout() async {
+    // Xóa token khỏi máy
+    await _storageService.delete('accessToken');
+    await _storageService.delete('refreshToken');
   }
 
   // ===== Refresh Token =====
