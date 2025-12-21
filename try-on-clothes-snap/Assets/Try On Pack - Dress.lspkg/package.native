@@ -1,0 +1,37 @@
+- !<NativePackageDescriptor/2cd21cb8-0057-4fdc-ac96-c48d1c2c1344>
+  PackagePath: ""
+  StudioVersion:
+    major: 5
+    minor: 17
+    patch: 0
+    build: 25121001
+    type: Unset
+    buildFlavor: ""
+    timestamp: 0
+    commit: ""
+  Description: "Try On Pack - Dress Allows you to add a dynamic dress to user with 3D Body Tracking, Cloth Simulation, Body Mesh, and Physics Collider. Click here to learn more on how to use Cloth Simulation Try On"
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  VersionMajor: 1
+  VersionMinor: 0
+  VersionPatch: 0
+  UpdateCheckpoint: 83
+  ExportUid: dfa8b6ec-b12c-4e6e-930c-c214e51dc829
+  ComponentUid: 9dce541f-acf1-4dfb-977a-85bd74cf0afb
+  PackagePolicy: CanBeUnpackedTransparent
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  Instantiable: !<reference> 00000000-0000-0000-0000-000000000000
+  AssetLibraryDependencyStructure: !<AssetLibraryDependencyStructure>
+    Name: ""
+    AssetId: ""
+    Hash: ""
+    Version:
+      major: 0
+      minor: 0
+      patch: 0
+      build: 0

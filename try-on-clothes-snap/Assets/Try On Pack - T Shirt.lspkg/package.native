@@ -1,0 +1,43 @@
+- !<NativePackageDescriptor/cef10111-844d-4299-9651-057b43e68c81>
+  PackagePath: ""
+  StudioVersion:
+    major: 5
+    minor: 17
+    patch: 0
+    build: 25121001
+    type: Unset
+    buildFlavor: ""
+    timestamp: 0
+    commit: ""
+  Description: |-
+    This 3D model can be used as an External Mesh of a Body Mesh Asset.
+    Contains: 
+    - fbx file 
+    - material(s)
+    - UV map texture
+    https://developers.snap.com/lens-studio/features/ar-tracking/body/external-mesh
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  VersionMajor: 1
+  VersionMinor: 0
+  VersionPatch: 0
+  UpdateCheckpoint: 83
+  ExportUid: f0793ac4-dcb4-4b64-8594-f06641875e1f
+  ComponentUid: e87d5ee0-6afd-43bf-b46f-8eb77f487243
+  PackagePolicy: CanBeUnpackedTransparent
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  Instantiable: !<reference> 00000000-0000-0000-0000-000000000000
+  AssetLibraryDependencyStructure: !<AssetLibraryDependencyStructure>
+    Name: ""
+    AssetId: ""
+    Hash: ""
+    Version:
+      major: 0
+      minor: 0
+      patch: 0
+      build: 0

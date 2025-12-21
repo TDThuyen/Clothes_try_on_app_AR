@@ -1,0 +1,45 @@
+studioVersion:
+  major: 5
+  minor: 17
+  patch: 0
+  build: 25121001
+  type: Public
+coreVersion: 340
+clientVersion: 13.70
+updateCheckpoint: 83
+sceneId: 0a1ccb1a-fe88-4fbb-9883-e3af3c75fd99
+metaInfo:
+  hints:
+    []
+  tags:
+    []
+  lensName: Try on
+  lensDescriptors:
+    - GEN_AI_ICON
+  lensApplicability:
+    - Front
+    - Back
+  lensClientCompatibilities:
+    - Mobile
+    - Web
+    - CameraKit
+  platformBundlesEnabled: false
+  iconHash: 65df1037b698c8d87ce046ee268de253
+  videoPreviewHash: 67f6100d950d5b38bec33ee84173b508
+  fromTemplateName: Default
+  fromTemplateUrl: Lens Studio 5.17.0.25121001
+  activationCamera: Front
+  sourceMapEnabled: false
+  usingMinClientVersions: false
+  androidMinClientVersion:
+    major: 0
+    minor: 0
+    patch: 0
+    build: 0
+  iOSMinClientVersion:
+    major: 0
+    minor: 0
+    patch: 0
+    build: 0
+  documentId: f3d524c5-ac07-44a7-b03a-e07d591396ec
+  originalDocumentId: f3d524c5-ac07-44a7-b03a-e07d591396ec

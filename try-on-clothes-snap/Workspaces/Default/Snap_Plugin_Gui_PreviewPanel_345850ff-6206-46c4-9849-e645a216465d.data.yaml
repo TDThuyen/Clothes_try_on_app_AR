@@ -1,0 +1,36 @@
+data:
+  cameraToMultimedia:
+    - Front: PreviewResources.bundle/Video/Idle/Idle.mp4
+    - Back: PreviewResources.bundle/Video/Idle/Idle.mp4
+  cameraType: Perspective
+  deviceName: iPhone 14 Pro
+  devicePose:
+    eulerRotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    translation: {x: 0.000000, y: 0.000000, z: 0.000000}
+  deviceTypeOverride: Mobile
+  fullscreenSpectaclesSimulation: true
+  inputSourceData:
+    type: Webcam
+    input:
+      source: Integrated Webcam
+      upscale: 1280
+    cameraView: Back
+  interactiveAspect: 0.461538
+  interactiveFov: 45.709999
+  internetAvailableOverride: true
+  isMuted: false
+  locale: en
+  mirrorHorizontally: false
+  mirrorVertically: false
+  outputTarget: Live
+  recordInputInsteadOfOutput: false
+  recordTrackingData: false
+  resolutionScale: 1.000000
+  showCaptureHint: false
+  showFrameRate: false
+  showLiveHint: false
+  stereoEye: Center
+  targetFrameRate: 30
+  tintSpectacles: true
+  uiMode: DoNotShow
+  userId: 466a4a0f-52c3-29b5-f729-2ed3977b800c
