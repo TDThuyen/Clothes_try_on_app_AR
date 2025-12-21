@@ -1,0 +1,130 @@
+- !<AssetImportMetadata/434bccfd-3a9d-2596-fffd-4aed4ae6dce2>
+  ImportedAssetIds:
+    .hidden/DefaultMtl: !<reference> da5efb2a-928e-4cd0-a244-8e1c2300c920
+    .hidden/white: !<reference> 9866c3d9-b25a-460f-8a1b-e1cebefcb456
+    2028ca51e4a54211: !<reference> 7ee11e1d-9296-4278-91ba-46767e1ad896
+    3558b6c08be8f6c9: !<reference> abcd762b-2ccd-4a6b-9842-146c7e687a43
+    7a0dd5cd69df73fa: !<reference> 2265df81-d40f-4c91-91f7-68ee3f8520b1
+    9b4de2153a4f9d85: !<reference> 52b0bda6-9327-46e3-b59a-b68599ecfc70
+    Animations/BaseLayer: !<reference> 21daa617-e4f4-47a4-8099-1cb100e7fc70
+    Materials/DefaultMtl: !<reference> 9db521a4-6a38-4c50-9c5d-be06fa70b39a
+    Materials/DefaultMtl|DefaultMtl|GraphPassInfo: !<reference> 7ebab1b3-584d-4049-bbd7-f8e5da79c5af
+    Meshes/leggings_mesh: !<reference> 34713138-effd-45af-9162-ddc512a16784
+    Scene: !<reference> 02a448d4-ac07-4484-b5e7-c0b8e43f78e7
+  ImporterName: FbxImporter
+  PrimaryAsset: !<reference> 02a448d4-ac07-4484-b5e7-c0b8e43f78e7
+  PackageType: LegacyPackage
+  LegacyPackagePolicy: CanBeUnpackedTransparent
+  ExtraData:
+    AssetLibraryId: 1kdnMBOad3MQebf22SHqdl
+  AssetDataMap:
+    Scene: !<own> 090eb12d-18e7-4e6d-965e-91e91c2dbbf7
+  DependentFiles:
+    []
+  ImporterSettings: !<FbxImporterSettings>
+    UseLegacyImporter: false
+    WithMaterials: true
+    NamingConvention: ByCategorySanitizeV2
+    PersistentIdGenerationAlgorithm: DescriptorBased
+    AnimationCurveOptimization: true
+    CustomAnimationSamplingRate: 30.000000
+    ImportVertexColor: true
+    ImportTangentsAndBinormals: true
+    RegenerateTangentsAndBinormals: false
+    RegenerateNormalsForSkinnedMeshes: true
+    ImportBlendShapeAnimation: true
+    ImportVertexAnimation: true
+    GeneratePivots: true
+    TriangulateNURBS: true
+    UseLegacyFbxLoader: false
+  CompressionSettings: !<ComplexCompressionSettings>
+    Presets:
+      None Compression: !<SingleCompressionSettings>
+        CompressorName: None
+        CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+      Performance Compression: !<SingleCompressionSettings>
+        CompressorName: Performance
+        CompressionSettings: !<TextureCompressionMipmapSettings>
+          Level: Medium
+          Mipmap: false
+    ExtensionMappings:
+      mesh: None Compression
+      jpg: Performance Compression
+    Overrides:
+      {}
+- !<ObjectPrefabAssetData/090eb12d-18e7-4e6d-965e-91e91c2dbbf7>
+  Prototype: !<ObjectOwner/13c22357-8b9b-4bcd-af86-f84df7650ef6>
+    PackagePath: ""
+    objects:
+      - !<own> 2265df81-d40f-4c91-6e08-9711c07adf4e
+- !<SceneObject/2265df81-d40f-4c91-6e08-9711c07adf4e>
+  PrefabRemaps:
+    []
+  Name: leggings
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> abcd762b-2ccd-4a6b-67bd-eb93819785bc
+  Components:
+    - !<own> 7ee11e1d-9296-4278-6e45-b98981e52769
+- !<RenderMeshVisual/52b0bda6-9327-46e3-4a65-497a6613038f>
+  PrefabRemaps:
+    []
+  Name: component_0
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 9db521a4-6a38-4c50-9c5d-be06fa70b39a
+  Mesh: !<reference> 34713138-effd-45af-9162-ddc512a16784
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<AnimationPlayer/7ee11e1d-9296-4278-6e45-b98981e52769>
+  PrefabRemaps:
+    []
+  Name: component_1
+  Enabled: true
+  Autoplay: true
+  ClipRangeType: Frames
+  AnimationClips:
+    - !<AnimationClip>
+      AnimationAsset: !<reference> 21daa617-e4f4-47a4-8099-1cb100e7fc70
+      Name: BaseLayer
+      Weight: 1.000000
+      PlaybackSpeed: 1.000000
+      Begin: 0.000000
+      End: 0.000000
+      Offset: 0.000000
+      Reversed: false
+      Disabled: false
+      BlendMode: Default
+      ScaleMode: Multiply
+      PlaybackMode: Loop
+- !<SceneObject/abcd762b-2ccd-4a6b-67bd-eb93819785bc>
+  PrefabRemaps:
+    []
+  Name: leggings_mesh
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 52b0bda6-9327-46e3-4a65-497a6613038f

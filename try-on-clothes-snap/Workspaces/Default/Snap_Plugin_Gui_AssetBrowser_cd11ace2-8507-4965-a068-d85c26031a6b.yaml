@@ -1,0 +1,124 @@
+CollapsedEntities:
+  type: stringset
+  value:
+    size: 118
+    values:
+      - 3D Body Tracking.bodyTracking3D
+      - Base.png
+      - Echopark.hdr
+      - Full Body Mesh - Dress.bodyMesh
+      - Full Body Mesh - Leggings.bodyMesh
+      - Full Body Mesh - Occluder.bodyMesh
+      - Full Body Mesh - Shorts.bodyMesh
+      - Full Body Mesh - TShirt.bodyMesh
+      - Occluder.mat
+      - Sphere.mesh
+      - Try On Pack - Dress.lspkg
+      - Try On Pack - Dress.lspkg/Full Body Mesh Winter Dress LP.bodyMesh
+      - Try On Pack - Dress.lspkg/Full Body Mesh.bodyMesh
+      - Try On Pack - Dress.lspkg/Materials
+      - Try On Pack - Dress.lspkg/Materials/Auto Paint Debug Material.mat
+      - Try On Pack - Dress.lspkg/Materials/Collider Occluder.mat
+      - Try On Pack - Dress.lspkg/Materials/Dress.mat
+      - Try On Pack - Dress.lspkg/Materials/Occluder_ Front.mat
+      - Try On Pack - Dress.lspkg/Meshes
+      - Try On Pack - Dress.lspkg/Meshes/Dress LP.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_arm_r.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_foot_L.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_foot_r.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_forearm_r.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_hand_r.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_head.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_hips.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_legtop_r.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_neck.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_spine.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_spine1.mesh
+      - Try On Pack - Dress.lspkg/Meshes/guide_spine2.mesh
+      - Try On Pack - Dress.lspkg/Scripts
+      - Try On Pack - Dress.lspkg/Scripts/ClothReset_TapEvent.js
+      - Try On Pack - Dress.lspkg/Scripts/ClothReset_wrapped.js
+      - Try On Pack - Dress.lspkg/Scripts/ColliderSettingForChildObjects.js
+      - Try On Pack - Dress.lspkg/Scripts/VertexDistanceController.js
+      - Try On Pack - Dress.lspkg/Shaders
+      - Try On Pack - Dress.lspkg/Shaders/Auto Paint Debug Material.ss_graph
+      - Try On Pack - Dress.lspkg/Shaders/Collider Occluder.ss_graph
+      - Try On Pack - Dress.lspkg/Shaders/Dress.ss_graph
+      - Try On Pack - Dress.lspkg/Shaders/Occluder_ Front.ss_graph
+      - Try On Pack - Dress.lspkg/Textures
+      - Try On Pack - Dress.lspkg/Textures/dress_base_texture.png
+      - Try On Pack - Dress.lspkg/Textures/dress_normal.png
+      - Try On Pack - Dress.lspkg/Tracking
+      - Try On Pack - Dress.lspkg/Tracking/Body Tracking Asset.bodyTracking3D
+      - Try On Pack - Dress.lspkg/Try_On_Pack_-_Dress__PUT_UNDER_MAIN_CAM.prefab
+      - Try On Pack - Dress.lspkg/package.native
+      - Try On Pack - Leggings.lspkg
+      - Try On Pack - Leggings.lspkg/leggings purple
+      - Try On Pack - Leggings.lspkg/leggings purple/leggings_purple/.hidden
+      - Try On Pack - Leggings.lspkg/leggings purple/leggings_purple/.hidden/leggings_purple.ss_graph
+      - Try On Pack - Leggings.lspkg/leggings purple/leggings_purple/Garments
+      - Try On Pack - Leggings.lspkg/leggings purple/leggings_purple/Garments/Materials
+      - Try On Pack - Leggings.lspkg/leggings purple/leggings_purple/Garments/Materials/leggings_purple.mat
+      - Try On Pack - Leggings.lspkg/leggings purple/leggings_purple/Garments/Textures
+      - Try On Pack - Leggings.lspkg/leggings purple/leggings_purple/Garments/Textures/leggings_albedo_2.png
+      - Try On Pack - Leggings.lspkg/leggings purple/leggings_purple/Garments/Textures/leggings_n.png
+      - Try On Pack - Leggings.lspkg/leggings uv
+      - Try On Pack - Leggings.lspkg/leggings uv/leggings_uv.png
+      - Try On Pack - Leggings.lspkg/leggings yellow/leggings_yellow/.hidden
+      - Try On Pack - Leggings.lspkg/leggings yellow/leggings_yellow/.hidden/leggings_yellow.ss_graph
+      - Try On Pack - Leggings.lspkg/leggings yellow/leggings_yellow/Garments
+      - Try On Pack - Leggings.lspkg/leggings yellow/leggings_yellow/Garments/Materials
+      - Try On Pack - Leggings.lspkg/leggings yellow/leggings_yellow/Garments/Materials/leggings_yellow.mat
+      - Try On Pack - Leggings.lspkg/leggings yellow/leggings_yellow/Garments/Textures
+      - Try On Pack - Leggings.lspkg/leggings yellow/leggings_yellow/Garments/Textures/leggings_albedo_1.png
+      - Try On Pack - Leggings.lspkg/leggings yellow/leggings_yellow/Garments/Textures/leggings_n.png
+      - Try On Pack - Leggings.lspkg/leggings.fbx/.hidden
+      - Try On Pack - Leggings.lspkg/leggings.fbx/.hidden/DefaultMtl
+      - Try On Pack - Leggings.lspkg/leggings.fbx/.hidden/white
+      - Try On Pack - Leggings.lspkg/leggings.fbx/Animations
+      - Try On Pack - Leggings.lspkg/leggings.fbx/Animations/BaseLayer
+      - Try On Pack - Leggings.lspkg/leggings.fbx/Materials
+      - Try On Pack - Leggings.lspkg/leggings.fbx/Materials/DefaultMtl
+      - Try On Pack - Leggings.lspkg/leggings.fbx/Meshes/leggings_mesh
+      - Try On Pack - Leggings.lspkg/leggings.fbx/leggings
+      - Try On Pack - Leggings.lspkg/package.native
+      - Try On Pack - Shorts.lspkg
+      - Try On Pack - Shorts.lspkg/package.native
+      - Try On Pack - Shorts.lspkg/shorts purple mat/Materials/shorts_purple.mat
+      - Try On Pack - Shorts.lspkg/shorts purple mat/Shaders
+      - Try On Pack - Shorts.lspkg/shorts purple mat/Shaders/shorts_purple.ss_graph
+      - Try On Pack - Shorts.lspkg/shorts purple mat/Textures
+      - Try On Pack - Shorts.lspkg/shorts purple mat/Textures/shorts_albedo_2.png
+      - Try On Pack - Shorts.lspkg/shorts purple mat/Textures/shorts_n.png
+      - Try On Pack - Shorts.lspkg/shorts uv/shorts_uv.png
+      - Try On Pack - Shorts.lspkg/shorts yellow mat/Materials/shorts_yellow.mat
+      - Try On Pack - Shorts.lspkg/shorts yellow mat/Shaders
+      - Try On Pack - Shorts.lspkg/shorts yellow mat/Shaders/shorts_yellow.ss_graph
+      - Try On Pack - Shorts.lspkg/shorts yellow mat/Textures
+      - Try On Pack - Shorts.lspkg/shorts yellow mat/Textures/shorts_albedo_1.png
+      - Try On Pack - Shorts.lspkg/shorts yellow mat/Textures/shorts_n.png
+      - Try On Pack - Shorts.lspkg/shorts.fbx/.hidden
+      - Try On Pack - Shorts.lspkg/shorts.fbx/.hidden/DefaultMtl
+      - Try On Pack - Shorts.lspkg/shorts.fbx/.hidden/white
+      - Try On Pack - Shorts.lspkg/shorts.fbx/Animations
+      - Try On Pack - Shorts.lspkg/shorts.fbx/Animations/BaseLayer
+      - Try On Pack - Shorts.lspkg/shorts.fbx/Materials/DefaultMtl
+      - Try On Pack - Shorts.lspkg/shorts.fbx/Meshes/shorts_mesh
+      - Try On Pack - Shorts.lspkg/shorts.fbx/shorts
+      - Try On Pack - T Shirt.lspkg
+      - Try On Pack - T Shirt.lspkg/package.native
+      - Try On Pack - T Shirt.lspkg/tshirt uv/tshirt_uv.png
+      - Try On Pack - T Shirt.lspkg/tshirt white mat/Materials/tshirt_white.mat
+      - Try On Pack - T Shirt.lspkg/tshirt white mat/Shaders/tshirt_white.ss_graph
+      - Try On Pack - T Shirt.lspkg/tshirt white mat/Textures/tshirt_d.png
+      - Try On Pack - T Shirt.lspkg/tshirt white mat/Textures/tshirt_n.png
+      - Try On Pack - T Shirt.lspkg/tshirt.fbx/.hidden
+      - Try On Pack - T Shirt.lspkg/tshirt.fbx/.hidden/DefaultMtl
+      - Try On Pack - T Shirt.lspkg/tshirt.fbx/.hidden/white
+      - Try On Pack - T Shirt.lspkg/tshirt.fbx/Animations
+      - Try On Pack - T Shirt.lspkg/tshirt.fbx/Animations/BaseLayer
+      - Try On Pack - T Shirt.lspkg/tshirt.fbx/Materials/DefaultMtl
+      - Try On Pack - T Shirt.lspkg/tshirt.fbx/Meshes/tshirt_mesh
+      - Try On Pack - T Shirt.lspkg/tshirt.fbx/tshirt
+      - simple_pbr.ss_graph
+  options: 4

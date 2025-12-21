@@ -1,0 +1,58 @@
+- !<AssetImportMetadata/ea806d66-39b9-78a7-9a8f-077b588b2461>
+  ImportedAssetIds:
+    JavaScriptAsset: !<reference> 27edbf6b-9f51-4642-a2b0-2d4447a9eb76
+  ImporterName: JavaScriptAssetImporter
+  PrimaryAsset: !<reference> 27edbf6b-9f51-4642-a2b0-2d4447a9eb76
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    AssetLibraryId: 7IT24dZoVYQm568nUkIwbC
+  AssetDataMap:
+    JavaScriptAsset: !<own> 4f1d798e-ebea-4f1c-a30b-a5198c0eff27
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ScriptAssetData/4f1d798e-ebea-4f1c-a30b-a5198c0eff27>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 1
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 7c96c781-8a3c-4af5-bd11-1a9c7d430308
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    enableSmoothing: false
+    intangible: false
+    matter: false
+    rotateSmoothFactor: false
+    setMatter: false
+    setWorldSetting: false
+    showColliders: false
+    translateSmoothFactor: false
+    worldSettingAsset: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - setWorldSetting: false
+      worldSettingAsset: !<reference.WorldSettingsAsset> 00000000-0000-0000-0000-000000000000
+      setMatter: false
+      matter: !<reference.Matter> 00000000-0000-0000-0000-000000000000
+      intangible: false
+      showColliders: false
+      enableSmoothing: false
+      translateSmoothFactor: !<float> 0.000000
+      rotateSmoothFactor: !<float> 0.000000
+  ScriptTypes:
+    -
+      {}

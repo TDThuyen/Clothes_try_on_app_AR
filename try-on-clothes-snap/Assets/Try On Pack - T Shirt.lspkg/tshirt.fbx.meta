@@ -1,0 +1,130 @@
+- !<AssetImportMetadata/e9bdbc04-d52f-f233-b05c-f3258d9f0f51>
+  ImportedAssetIds:
+    .hidden/DefaultMtl: !<reference> 86ca35c5-c326-482a-8f82-11f506988de6
+    .hidden/white: !<reference> b0e6d2f2-e6cc-45b2-9a0d-5e47aafd7196
+    2028ca51e4a54211: !<reference> 8e1872ae-b1fd-4b73-a955-e48f2374bd1b
+    7a0dd5cd69df73fa: !<reference> 11417e38-9a77-4d52-8cc1-4adf7e752a71
+    Animations/BaseLayer: !<reference> 7bfdb2fd-ffcd-413c-9aad-fdd590905101
+    Materials/DefaultMtl: !<reference> 993e435a-5727-4027-b1bc-69efb08caa5c
+    Materials/DefaultMtl|DefaultMtl|GraphPassInfo: !<reference> 4d10786e-3471-4e64-be2d-6ffdbf493da0
+    Meshes/tshirt_mesh: !<reference> bafcfd7c-9100-4970-95d2-cf813ebae617
+    Scene: !<reference> 0a802c96-cbba-493e-8c9e-8fd88ed5b4c3
+    a3719c5faf9dbefc: !<reference> 3cc3ba37-a0fc-4c66-bbc9-71f7df4b502b
+    c65e24beb12833cb: !<reference> 8fd4d8f9-6975-4243-9c21-e0e5ae23f222
+  ImporterName: FbxImporter
+  PrimaryAsset: !<reference> 0a802c96-cbba-493e-8c9e-8fd88ed5b4c3
+  PackageType: LegacyPackage
+  LegacyPackagePolicy: CanBeUnpackedTransparent
+  ExtraData:
+    AssetLibraryId: 73zW89v6lMezjL2t8LhSso
+  AssetDataMap:
+    Scene: !<own> 90d4084b-99b3-409a-bb60-85d64956ce06
+  DependentFiles:
+    []
+  ImporterSettings: !<FbxImporterSettings>
+    UseLegacyImporter: false
+    WithMaterials: true
+    NamingConvention: ByCategorySanitizeV2
+    PersistentIdGenerationAlgorithm: DescriptorBased
+    AnimationCurveOptimization: true
+    CustomAnimationSamplingRate: 30.000000
+    ImportVertexColor: true
+    ImportTangentsAndBinormals: true
+    RegenerateTangentsAndBinormals: false
+    RegenerateNormalsForSkinnedMeshes: true
+    ImportBlendShapeAnimation: true
+    ImportVertexAnimation: true
+    GeneratePivots: true
+    TriangulateNURBS: true
+    UseLegacyFbxLoader: false
+  CompressionSettings: !<ComplexCompressionSettings>
+    Presets:
+      None Compression: !<SingleCompressionSettings>
+        CompressorName: None
+        CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+      Performance Compression: !<SingleCompressionSettings>
+        CompressorName: Performance
+        CompressionSettings: !<TextureCompressionMipmapSettings>
+          Level: Medium
+          Mipmap: false
+    ExtensionMappings:
+      mesh: None Compression
+      jpg: Performance Compression
+    Overrides:
+      {}
+- !<SceneObject/11417e38-9a77-4d52-733e-b520818ad58e>
+  PrefabRemaps:
+    []
+  Name: tshirt
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 3cc3ba37-a0fc-4c66-4436-8e0820b4afd4
+  Components:
+    - !<own> 8e1872ae-b1fd-4b73-56aa-1b70dc8b42e4
+- !<SceneObject/3cc3ba37-a0fc-4c66-4436-8e0820b4afd4>
+  PrefabRemaps:
+    []
+  Name: tshirt_mesh
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.307871, y: 0.161507, z: -0.078962}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 8fd4d8f9-6975-4243-63de-1f1a51dc0ddd
+- !<AnimationPlayer/8e1872ae-b1fd-4b73-56aa-1b70dc8b42e4>
+  PrefabRemaps:
+    []
+  Name: component_1
+  Enabled: true
+  Autoplay: true
+  ClipRangeType: Frames
+  AnimationClips:
+    - !<AnimationClip>
+      AnimationAsset: !<reference> 7bfdb2fd-ffcd-413c-9aad-fdd590905101
+      Name: BaseLayer
+      Weight: 1.000000
+      PlaybackSpeed: 1.000000
+      Begin: 0.000000
+      End: 0.000000
+      Offset: 0.000000
+      Reversed: false
+      Disabled: false
+      BlendMode: Default
+      ScaleMode: Multiply
+      PlaybackMode: Loop
+- !<RenderMeshVisual/8fd4d8f9-6975-4243-63de-1f1a51dc0ddd>
+  PrefabRemaps:
+    []
+  Name: component_0
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 993e435a-5727-4027-b1bc-69efb08caa5c
+  Mesh: !<reference> bafcfd7c-9100-4970-95d2-cf813ebae617
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<ObjectPrefabAssetData/90d4084b-99b3-409a-bb60-85d64956ce06>
+  Prototype: !<ObjectOwner/ff028c95-f819-4add-8492-420697796c0d>
+    PackagePath: ""
+    objects:
+      - !<own> 11417e38-9a77-4d52-733e-b520818ad58e
