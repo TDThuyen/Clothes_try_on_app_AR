@@ -1,7 +1,9 @@
-// lib/screens/chatbot_screen.dart
-
 import 'package:flutter/material.dart';
 import '../apis/chatbot_api.dart';
+
+// 🔑 SESSION + UNITY
+import '../core/session/face_session_store.dart';
+import '../core/bridge/unity_launcher.dart';
 
 class ChatMessage {
   final String id;
@@ -18,10 +20,7 @@ class ChatMessage {
 }
 
 class ChatbotScreen extends StatefulWidget {
-  /// Nếu mở từ màn chi tiết sản phẩm, có thể truyền productId vào
   final int? productId;
-
-  /// Nếu có token auth thì truyền vào, còn không thì để null
   final String? authToken;
 
   const ChatbotScreen({
@@ -40,7 +39,15 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
   final List<ChatMessage> _messages = [];
   List<ProductSuggestion> _lastSuggestions = [];
+
   bool _isSending = false;
+  bool _checkingFace = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _ensureFaceSession();
+  }
 
   @override
   void dispose() {
@@ -49,9 +56,42 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     super.dispose();
   }
 
+  // =========================================================
+  // CHECK FACE SESSION – AUTO OPEN UNITY IF NEEDED
+  // =========================================================
+  Future<void> _ensureFaceSession() async {
+    await Future.delayed(Duration.zero);
+
+    if (!FaceSessionStore.hasSession()) {
+      debugPrint('🟡 No face session → open Unity');
+      await UnityLauncher.openUnity();
+    }
+
+    if (mounted) {
+      setState(() {
+        _checkingFace = false;
+      });
+    }
+  }
+
+  // =========================================================
+  // SEND MESSAGE
+  // =========================================================
   Future<void> _sendMessage() async {
     final text = _inputController.text.trim();
     if (text.isEmpty || _isSending) return;
+
+    // 🔒 BLOCK CHAT IF NO FACE SESSION
+    if (!FaceSessionStore.hasSession()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vui lòng quét khuôn mặt trước khi trò chuyện'),
+        ),
+      );
+
+      await UnityLauncher.openUnity();
+      return;
+    }
 
     final userMsg = ChatMessage(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
@@ -73,6 +113,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         text,
         productId: widget.productId,
         token: widget.authToken,
+        sessionId: FaceSessionStore.get(), // 🔑 IMPORTANT
       );
 
       final botMsg = ChatMessage(
@@ -119,10 +160,21 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     });
   }
 
+  // =========================================================
+  // UI
+  // =========================================================
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+
+    if (_checkingFace) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -131,7 +183,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       ),
       body: Column(
         children: [
-          // Khu vực chat
+          // ================= CHAT AREA =================
           Expanded(
             child: Container(
               color: isDark ? Colors.black : Colors.grey.shade100,
@@ -144,9 +196,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                   final isUser = msg.isUser;
 
                   return Align(
-                    alignment: isUser
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
+                    alignment:
+                        isUser ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
                       padding: const EdgeInsets.symmetric(
@@ -154,35 +205,32 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                         vertical: 8,
                       ),
                       constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.75,
+                        maxWidth:
+                            MediaQuery.of(context).size.width * 0.75,
                       ),
                       decoration: BoxDecoration(
                         color: isUser
                             ? theme.colorScheme.primary
                             : (isDark
-                            ? Colors.grey.shade800
-                            : Colors.white),
+                                ? Colors.grey.shade800
+                                : Colors.white),
                         borderRadius: BorderRadius.only(
                           topLeft: const Radius.circular(12),
                           topRight: const Radius.circular(12),
-                          bottomLeft: Radius.circular(isUser ? 12 : 0),
-                          bottomRight: Radius.circular(isUser ? 0 : 12),
+                          bottomLeft:
+                              Radius.circular(isUser ? 12 : 0),
+                          bottomRight:
+                              Radius.circular(isUser ? 0 : 12),
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 2,
-                            spreadRadius: 0,
-                            offset: const Offset(0, 1),
-                            color: Colors.black.withOpacity(0.05),
-                          ),
-                        ],
                       ),
                       child: Text(
                         msg.text,
                         style: TextStyle(
                           color: isUser
                               ? Colors.white
-                              : (isDark ? Colors.white : Colors.black87),
+                              : (isDark
+                                  ? Colors.white
+                                  : Colors.black87),
                         ),
                       ),
                     ),
@@ -192,7 +240,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             ),
           ),
 
-          // Khu vực gợi ý sản phẩm từ chatbot
+          // ================= PRODUCT SUGGESTIONS =================
           if (_lastSuggestions.isNotEmpty)
             Container(
               height: 150,
@@ -200,9 +248,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
               decoration: BoxDecoration(
                 color: isDark ? Colors.grey.shade900 : Colors.white,
                 border: Border(
-                  top: BorderSide(
-                    color: Colors.grey.shade300,
-                  ),
+                  top: BorderSide(color: Colors.grey.shade300),
                 ),
               ),
               child: Column(
@@ -210,17 +256,18 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 children: [
                   const Padding(
                     padding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     child: Text(
                       'Sản phẩm gợi ý',
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),
                   Expanded(
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 8),
                       itemCount: _lastSuggestions.length,
                       itemBuilder: (context, index) {
                         final p = _lastSuggestions[index];
@@ -232,10 +279,11 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
               ),
             ),
 
-          // Thanh nhập tin nhắn
+          // ================= INPUT BAR =================
           SafeArea(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               decoration: BoxDecoration(
                 color: isDark ? Colors.grey.shade900 : Colors.white,
                 border: Border(
@@ -251,7 +299,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                       onSubmitted: (_) => _sendMessage(),
                       decoration: const InputDecoration(
                         hintText:
-                        'Hỏi về phong cách, tuổi, ngân sách, sản phẩm...',
+                            'Hỏi về phong cách, tuổi, ngân sách, sản phẩm...',
                         border: InputBorder.none,
                       ),
                       minLines: 1,
@@ -261,18 +309,18 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                   const SizedBox(width: 4),
                   _isSending
                       ? const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  )
+                          padding: EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        )
                       : IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: _sendMessage,
-                    color: theme.colorScheme.primary,
-                  ),
+                          icon: const Icon(Icons.send),
+                          onPressed: _sendMessage,
+                          color: theme.colorScheme.primary,
+                        ),
                 ],
               ),
             ),
@@ -282,6 +330,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     );
   }
 
+  // =========================================================
+  // PRODUCT CARD
+  // =========================================================
   Widget _buildProductCard(ProductSuggestion p) {
     return Container(
       width: 140,
@@ -293,29 +344,27 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: InkWell(
-          onTap: () {
-            // TODO: điều hướng sang trang chi tiết sản phẩm nếu mày có màn đó
-            // Navigator.push(...);
-          },
+          onTap: () {},
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: p.imageUrl != null && p.imageUrl!.isNotEmpty
                     ? Image.network(
-                  p.imageUrl!,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) =>
-                  const Center(child: Icon(Icons.image_not_supported)),
-                )
+                        p.imageUrl!,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Center(
+                          child: Icon(Icons.image_not_supported),
+                        ),
+                      )
                     : const Center(
-                  child: Icon(Icons.image, size: 32),
-                ),
+                        child: Icon(Icons.image, size: 32),
+                      ),
               ),
               Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 8, vertical: 4),
                 child: Text(
                   p.name,
                   maxLines: 2,
@@ -327,8 +376,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 ),
               ),
               Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 8, vertical: 2),
                 child: Text(
                   '${p.price.toStringAsFixed(0)} đ',
                   style: const TextStyle(

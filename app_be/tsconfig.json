@@ -8,7 +8,7 @@
     "target": "ES2023",
     "module": "commonjs",
     "moduleResolution": "node",
-    "types": ["node"],
+    "types": ["node", "Multer"],
 
     // Helpful features
     "sourceMap": true,

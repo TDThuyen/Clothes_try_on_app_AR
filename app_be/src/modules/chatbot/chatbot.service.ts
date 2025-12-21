@@ -1,21 +1,59 @@
-// src/modules/chatbot/chatbot.service.ts
-
 import { getPrisma } from '../../common/prisma';
-import { geminiModel } from '../../lib/googleAI'; // 👈 dùng Google AI
+import { geminiModel } from '../../lib/googleAI';
 import { STYLE_GUIDES } from './styleGuides';
 import { FAQS } from './faqs';
 import { parseUserContextFromMessage } from './parser';
+import dotenv from 'dotenv';
+import crypto from 'crypto';
+dotenv.config();
+
+/* =========================================================
+   TYPES
+   ========================================================= */
 
 export type HandleChatbotMessageOptions = {
   userId?: number;
+  sessionId?: string; // 🔑 face session id (from scan)
   message: string;
   productId?: number;
 };
 
+type FaceSessionData = {
+  age: number;
+  gender: string;
+  createdAt: number;
+};
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const FACE_TRACKER_API: string = process.env.FACE_TRACKER_API ?? '';
+if (!FACE_TRACKER_API) {
+  throw new Error('FACE_TRACKER_API is not defined in .env');
+}
+
+// Face session TTL: 1 day
+const FACE_SESSION_TTL = 60 * 24 * 60 * 1000;
+
+/* =========================================================
+   IN-MEMORY FACE SESSION STORE
+   - 1 session = 1 scan
+   - Chat ONLY reads, never updates
+   - In production: use Redis
+   ========================================================= */
+
+const faceSessionStore = new Map<string, FaceSessionData>();
+
+/* ========================================================= */
+
 export class ChatbotService {
   private prisma = getPrisma();
 
-  // Hàm shuffle để mỗi lần gợi ý sản phẩm có thứ tự khác nhau
+  /* =========================================================
+     UTILS
+     ========================================================= */
+
   private shuffleArray<T>(array: T[]): T[] {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -25,12 +63,43 @@ export class ChatbotService {
     return arr;
   }
 
+  /* =========================================================
+     CHATBOT MAIN ENTRY
+     - Reuse SAME face session for all chats
+     - Session only changes when user scans face again
+     ========================================================= */
+
   async handleChatbotMessage(options: HandleChatbotMessageOptions) {
-    const { userId, message, productId } = options;
+    const { userId, sessionId, message, productId } = options;
+
+    console.log('[CHATBOT] incoming message:', {
+      message,
+      sessionId: sessionId ?? 'NONE',
+    });
 
     const parsed = parseUserContextFromMessage(message);
 
-    // 1. Lấy user nếu cần (để sau này suy ra gender, sở thích, v.v.)
+    /* ---------------- FACE SESSION LOOKUP ---------------- */
+
+    let faceSession: FaceSessionData | undefined;
+
+    if (sessionId && faceSessionStore.has(sessionId)) {
+      const stored = faceSessionStore.get(sessionId)!;
+
+      // ⏱️ Expire old sessions
+      if (Date.now() - stored.createdAt < FACE_SESSION_TTL) {
+        faceSession = stored;
+        console.log('[CHATBOT] using face session:', sessionId, stored);
+      } else {
+        faceSessionStore.delete(sessionId);
+        console.log('[CHATBOT] face session expired:', sessionId);
+      }
+    } else if (sessionId) {
+      console.log('[CHATBOT] face session NOT FOUND:', sessionId);
+    }
+
+    /* ---------------- USER FETCH (OPTIONAL) ---------------- */
+
     let user: any = null;
     if (userId) {
       try {
@@ -42,11 +111,11 @@ export class ChatbotService {
       }
     }
 
-    // 2. Lấy danh sách sản phẩm liên quan (RAG retrieve)
+    /* ---------------- PRODUCT RETRIEVAL (RAG) ---------------- */
+
     let products: any[] = [];
 
     if (productId) {
-      // Hỏi về 1 sản phẩm cụ thể (từ trang detail)
       try {
         const p = await this.prisma.product.findUnique({
           where: { id: productId },
@@ -57,100 +126,57 @@ export class ChatbotService {
         products = [];
       }
     } else {
-      // Hỏi tư vấn chung theo tuổi / tài chính / màu / loại
       const whereAnd: any[] = [];
 
-      // --- budget ---
       if (parsed.budget) {
         whereAnd.push({ price: { lte: parsed.budget } });
       }
 
-      // --- màu sắc: lấy màu đầu tiên parse được ---
-      if (parsed.colors && parsed.colors.length > 0) {
-        whereAnd.push({
-          color: { contains: parsed.colors[0] }, // 'đen', 'trắng', 'xanh',...
-        });
+      if (parsed.colors?.length) {
+        whereAnd.push({ color: { contains: parsed.colors[0] } });
       }
 
-      // --- loại đồ: jean, áo, quần, kính, mũ ---
-      if (parsed.itemTypes && parsed.itemTypes.length > 0) {
-        const types = parsed.itemTypes;
-        const typeOr: any[] = [];
+      if (parsed.itemTypes?.length) {
+        const or: any[] = [];
 
-        const pushKeyword = (kw: string) => {
-          typeOr.push(
-            { category: { name: { contains: kw } } },
-            { name: { contains: kw } },
-          );
-        };
+        const push = (kw: string) =>
+          or.push({ category: { name: { contains: kw } } }, { name: { contains: kw } });
 
-        if (types.includes('jean')) {
-          pushKeyword('jean');
+        if (parsed.itemTypes.includes('jean')) push('jean');
+        if (parsed.itemTypes.includes('ao')) push('áo');
+        if (parsed.itemTypes.includes('quan')) push('quần');
+        if (parsed.itemTypes.includes('kinh')) {
+          push('kính');
+          push('kinh');
+        }
+        if (parsed.itemTypes.includes('mu')) {
+          push('mũ');
+          push('nón');
         }
 
-        if (types.includes('ao')) {
-          // áo / áo thun / áo sơ mi ...
-          pushKeyword('áo');
-        }
-
-        if (types.includes('quan')) {
-          // quần nói chung → ưu tiên từ "quần"
-          pushKeyword('quần');
-        }
-
-        if (types.includes('kinh')) {
-          pushKeyword('kính');
-          pushKeyword('kinh'); // phòng trường hợp không dấu
-        }
-
-        if (types.includes('mu')) {
-          pushKeyword('mũ');
-          pushKeyword('nón');
-        }
-
-        if (typeOr.length > 0) {
-          whereAnd.push({ OR: typeOr });
-        }
+        if (or.length) whereAnd.push({ OR: or });
       }
 
       const where = whereAnd.length ? { AND: whereAnd } : undefined;
 
       try {
         if (where) {
-          /**
-           * ✅ Có điều kiện lọc rõ ràng từ câu hỏi
-           * → Chỉ lấy những sản phẩm đáp ứng câu hỏi (WHERE)
-           * → Không giới hạn 5, mà trả về toàn bộ match (để context đầy đủ)
-           * → Sau đó shuffle để mỗi lần trả lời thứ tự khác nhau
-           */
           const matched = await this.prisma.product.findMany({
             where,
             include: { category: true },
           });
-
           products = this.shuffleArray(matched);
         } else {
-          /**
-           * ❓ Không parse được gì từ câu hỏi (không có budget/màu/loại)
-           * → Câu hỏi quá chung: gợi ý ngẫu nhiên một vài sản phẩm (ví dụ tối đa 5)
-           * → Dùng skip random để mỗi lần gợi ý khác nhau
-           */
           const total = await this.prisma.product.count();
           if (total > 0) {
-            const take = Math.min(5, total); // vẫn nên giới hạn để context không quá dài
-            const maxSkip = Math.max(total - take, 0);
-            const skip =
-              maxSkip > 0 ? Math.floor(Math.random() * (maxSkip + 1)) : 0;
+            const take = Math.min(5, total);
+            const skip = total > take ? Math.floor(Math.random() * (total - take + 1)) : 0;
 
-            const randomProducts = await this.prisma.product.findMany({
+            products = await this.prisma.product.findMany({
               skip,
               take,
               include: { category: true },
             });
-
-            products = this.shuffleArray(randomProducts);
-          } else {
-            products = [];
           }
         }
       } catch {
@@ -158,7 +184,8 @@ export class ChatbotService {
       }
     }
 
-    // 3. Chọn style guide phù hợp sơ sơ theo tuổi/budget
+    /* ---------------- STYLE GUIDES ---------------- */
+
     const relatedGuides = STYLE_GUIDES.filter((g) => {
       if (parsed.age && g.minAge && g.minAge > parsed.age) return false;
       if (parsed.age && g.maxAge && g.maxAge < parsed.age) return false;
@@ -167,71 +194,44 @@ export class ChatbotService {
       return true;
     }).slice(0, 3);
 
-    // 4. Lấy một số FAQ cơ bản
-    const faqs = FAQS.slice(0, 5);
+    /* ---------------- CONTEXT BUILDING ---------------- */
 
-    // 5. Build context cho sản phẩm (RAG context)
     const productContext = products
       .map((p) => {
-        const gender = (p as any).gender ?? 'không ghi';
-        const color = (p as any).color ?? 'không ghi';
-        const sizes =
-          (p as any).available_sizes ??
-          (p as any).availableSizes ??
-          'không ghi';
-
         return `
 [PRODUCT]
-Tên: ${(p as any).name}
-Danh mục: ${(p as any).category?.name ?? 'không rõ'}
-Giá: ${(p as any).price?.toLocaleString('vi-VN') ?? 'không rõ'} VND
-Giới tính: ${gender}
-Màu: ${color}
-Size: ${sizes}
-Mô tả chi tiết: ${(p as any).description ?? 'không có mô tả chi tiết'}
+Tên: ${p.name}
+Danh mục: ${p.category?.name ?? 'không rõ'}
+Giá: ${p.price?.toLocaleString('vi-VN') ?? 'không rõ'} VND
+Giới tính: ${p.gender ?? 'không ghi'}
+Màu: ${p.color ?? 'không ghi'}
+Size: ${p.available_sizes ?? 'không ghi'}
+Mô tả: ${p.description ?? 'không có'}
 `.trim();
       })
       .join('\n\n');
 
-    // 6. Context cho style guide
-    const guideContext = relatedGuides
-      .map(
-        (g) => `
-[STYLE_GUIDE: ${g.title}]
-${g.content}
-`.trim(),
-      )
+    const guideContext = relatedGuides.map((g) => `[STYLE_GUIDE]\n${g.content}`).join('\n\n');
+
+    const faqContext = FAQS.slice(0, 5)
+      .map((f) => `[FAQ]\nQ: ${f.question}\nA: ${f.answer}`)
       .join('\n\n');
 
-    // 7. Context cho FAQ
-    const faqContext = faqs
-      .map(
-        (f) => `
-[FAQ: ${f.topic}]
-Q: ${f.question}
-A: ${f.answer}
-`.trim(),
-      )
-      .join('\n\n');
+    // 🔑 FINAL USER INFO (FACE SESSION OVERRIDES TEXT)
+    const finalAge = faceSession?.age ?? parsed.age;
+    const finalGender = faceSession?.gender;
 
-    // 8. Thông tin user parse được
     const userInfoText = `
 [USER_INFO]
-Tuổi (nếu đoán được): ${parsed.age ?? 'không rõ'}
-Ngân sách (nếu đoán được): ${
-      parsed.budget ? parsed.budget.toLocaleString('vi-VN') + ' VND' : 'không rõ'
-    }
+Tuổi: ${finalAge ?? 'không rõ'}
+Giới tính: ${finalGender ?? 'không rõ'}
+Ngân sách: ${parsed.budget ? parsed.budget.toLocaleString('vi-VN') + ' VND' : 'không rõ'}
 `.trim();
 
     const systemPrompt = `
-Bạn là stylist tư vấn thời trang cho ứng dụng bán quần áo trên mobile.
-Nhiệm vụ:
-- Tư vấn cách ăn mặc dựa trên tuổi, ngân sách, ngữ cảnh (đi học, đi làm, đi chơi...).
-- Nếu có danh sách [PRODUCT], hãy gợi ý 2-3 sản phẩm cụ thể, nhắc lại đúng tên sản phẩm để người dùng dễ tìm.
-- Giải thích lý do chọn kiểu đồ đó (phù hợp vóc dáng, hoàn cảnh, tài chính).
-- Nếu user hỏi về đổi trả, ship, AR... hãy dựa vào phần [FAQ].
-- Nói chuyện thân thiện, dễ hiểu, ngắn gọn, dùng tiếng Việt.
-- Nếu thiếu thông tin (tuổi, ngân sách, giới tính) thì có thể hỏi lại nhẹ nhàng.
+Bạn là stylist tư vấn thời trang cho ứng dụng bán quần áo.
+Tư vấn dựa trên tuổi, giới tính, ngân sách và hoàn cảnh.
+Nói ngắn gọn, thân thiện, tiếng Việt.
 `.trim();
 
     const fullContext = `
@@ -240,36 +240,34 @@ ${systemPrompt}
 ${userInfoText}
 
 [PRODUCT_LIST]
-${productContext || 'Không có sản phẩm phù hợp trong danh sách.'}
+${productContext || 'Không có sản phẩm phù hợp.'}
 
 [STYLE_GUIDES]
-${guideContext || 'Không có style guide phù hợp.'}
+${guideContext || 'Không có.'}
 
 [FAQS]
-${faqContext || 'Không có FAQ.'}
+${faqContext || 'Không có.'}
 
 Người dùng hỏi: """${message}"""
 `.trim();
 
-    // 9. Gọi Google Gemini
+    /* ---------------- GEMINI CALL ---------------- */
+
     let outputText = 'Xin lỗi, hiện tại tôi không trả lời được.';
 
     try {
+      console.log('===== PROMPT SENT TO GEMINI =====');
+      console.log(fullContext);
+      console.log('================================');
+
       const result = await geminiModel.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: fullContext }],
-          },
-        ],
+        contents: [{ role: 'user', parts: [{ text: fullContext }] }],
       });
 
       const text = result.response.text();
-      if (typeof text === 'string' && text.trim().length > 0) {
-        outputText = text.trim();
-      }
+      if (text?.trim()) outputText = text.trim();
     } catch (err) {
-      console.error('[chatbot] Gemini error:', err);
+      console.error('[Gemini error]', err);
     }
 
     return {
@@ -277,14 +275,58 @@ Người dùng hỏi: """${message}"""
       products,
     };
   }
+
+  /* =========================================================
+     FACE ANALYSIS ENTRY
+     - ALWAYS CREATE NEW SESSION
+     - Session changes ONLY when user scans again
+     ========================================================= */
+
+  async analyzeFaceWithInternalService(file: Multer.File) {
+    const form = new FormData();
+
+    const blob = new Blob([file.buffer], {
+      type: file.mimetype || 'image/jpeg',
+    });
+
+    form.append('file', blob, file.originalname || 'face.jpg');
+
+    const res = await fetch(FACE_TRACKER_API, {
+      method: 'POST',
+      body: form,
+    });
+
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+
+    const data = await res.json();
+
+    if (!data.valid) return data;
+
+    const sessionId = crypto.randomUUID();
+
+    faceSessionStore.set(sessionId, {
+      age: data.age,
+      gender: data.gender,
+      createdAt: Date.now(),
+    });
+
+    console.log('[FACE] session created:', sessionId, data);
+
+    return {
+      valid: true,
+      sessionId,
+    };
+  }
 }
 
-// Instance giống checkout
+/* =========================================================
+   EXPORTS
+   ========================================================= */
+
 export const chatbotService = new ChatbotService();
 
-// Hàm tiện dụng để route cũ vẫn dùng được nếu đang import handleChatbotMessage
-export async function handleChatbotMessage(
-  options: HandleChatbotMessageOptions,
-) {
+export async function handleChatbotMessage(options: HandleChatbotMessageOptions) {
   return chatbotService.handleChatbotMessage(options);
 }

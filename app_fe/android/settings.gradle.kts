@@ -24,3 +24,8 @@ plugins {
 }
 
 include(":app")
+include(":unityLibrary")
+include(":launcher")
+
+project(":unityLibrary").projectDir = file("unity/unityLibrary")
+project(":launcher").projectDir = file("unity/launcher")

@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class RobotController : MonoBehaviour
 {
+    private string faceSessionId;
+    public FaceAnalysisService faceService;
+
     [Header("Camera Follow Settings")]
     public Camera targetCamera;
     [Range(1f, 20f)]
@@ -34,13 +37,16 @@ public class RobotController : MonoBehaviour
     void Start()
     {
         if (targetCamera == null)
-        {
             targetCamera = Camera.main;
-            if (targetCamera == null)
-                Debug.LogError("Camera not assigned!");
+
+        if (faceService == null)
+        {
+            Debug.LogError("❌ FaceAnalysisService not assigned!");
+            return;
         }
 
-        lastJumpTime = Time.time;
+        // 🔥 BẮT ĐẦU FACE ANALYSIS
+        faceService.StartFaceAnalysis(this);
     }
 
     void LateUpdate()
@@ -69,7 +75,7 @@ public class RobotController : MonoBehaviour
 
             if (dir.sqrMagnitude > 0.001f)
             {
-                rotationOffset = 90f;
+                // rotationOffset = 90f;
                 Quaternion targetRotation = Quaternion.LookRotation(dir) * Quaternion.Euler(0, rotationOffset, 0);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime / rotationSmoothing);
             }
@@ -116,11 +122,24 @@ public class RobotController : MonoBehaviour
             }
         }
     }
-    
+
+    public void SetFaceSession(string sessionId)
+    {
+        faceSessionId = sessionId;
+    }
+
+    public string GetFaceSession()
+    {
+        return faceSessionId;
+    }
+
     public void Say(string message)
     {
-        Debug.Log($"Robot says: {message}");
+        Debug.Log($"🤖 Robot says: {message}");
 
-        // Send to Flutter mobile
+        if (RobotUI.Instance != null)
+            RobotUI.Instance.ShowMessage(message);
+
+        // Sau này mới gửi sang Flutter
     }
 }

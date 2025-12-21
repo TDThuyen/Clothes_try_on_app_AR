@@ -1,8 +1,9 @@
-// lib/apis/chatbot_api.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../config/app_config.dart';
+
+// 🔑 FACE SESSION
+import '../core/session/face_session_store.dart';
 
 /// Response từ API chatbot
 class ChatbotResponse {
@@ -25,7 +26,7 @@ class ChatbotResponse {
   }
 }
 
-/// Sản phẩm gợi ý từ chatbot (chỉ lấy vài field cần thiết)
+/// Sản phẩm gợi ý từ chatbot
 class ProductSuggestion {
   final int id;
   final String name;
@@ -51,13 +52,11 @@ class ProductSuggestion {
       name: json['name'] as String? ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0,
       imageUrl: json['imageUrl'] as String? ??
-          json['image_url'] as String? ??
-          null,
+          json['image_url'] as String?,
       color: json['color'] as String?,
       gender: json['gender'] as String?,
       availableSizes: json['availableSizes'] as String? ??
-          json['available_sizes'] as String? ??
-          null,
+          json['available_sizes'] as String?,
     );
   }
 }
@@ -66,24 +65,35 @@ class ChatbotApi {
   static final String _baseUrl = AppConfig.baseUrl;
 
   static Future<ChatbotResponse> sendMessage(
-      String message, {
-        int? productId,
-        String? token,
-      }) async {
+    String message, {
+    int? productId,
+    String? token,
+    String? sessionId, // 👈 optional override
+  }) async {
     final uri = Uri.parse('$_baseUrl/api/chatbot');
 
     final headers = <String, String>{
       'Content-Type': 'application/json',
     };
+
     if (token != null && token.isNotEmpty) {
       headers['Authorization'] = 'Bearer $token';
     }
 
+    // 🔑 LẤY SESSION ID
+    final faceSessionId =
+        sessionId ?? FaceSessionStore.get();
+
     final body = <String, dynamic>{
       'message': message,
     };
+
     if (productId != null) {
       body['productId'] = productId;
+    }
+
+    if (faceSessionId != null && faceSessionId.isNotEmpty) {
+      body['sessionId'] = faceSessionId;
     }
 
     final resp = await http.post(

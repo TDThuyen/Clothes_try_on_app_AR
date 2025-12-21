@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="staticSplashScreenBackgroundColor">#231F20</color>
+  <color name="windowSplashScreenIconBackgroundColor">@android:color/transparent</color>
+  <color name="windowSplashScreenAnimatedIconColor">@android:color/transparent</color>
+</resources>

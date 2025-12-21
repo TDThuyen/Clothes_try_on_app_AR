@@ -11,3 +11,9 @@
 *.mdb
 *.apk
 *.unitypackage
+.utmp/
+*.sln
+*.slnx
+*.csproj
+Assets/XR/UserSimulationSettings/
+Assets/TextMesh Pro/

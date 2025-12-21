@@ -6,6 +6,9 @@ import 'screens/register_screen.dart';
 import 'screens/verification_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/all_products_screen.dart';
+import 'core/bridge/unity_bridge.dart';
+import 'core/session/face_session_store.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +16,17 @@ Future<void> main() async {
   // Load các biến môi trường từ file .env
   await dotenv.load(fileName: ".env");
 
+  // 🔑 INIT UNITY → FLUTTER BRIDGE
+  UnityBridge.init(
+    onSession: (sessionId) {
+      debugPrint('🔥 Face session received from Unity: $sessionId');
+      FaceSessionStore.set(sessionId);
+    },
+  );
+
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
